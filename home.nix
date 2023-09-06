@@ -1,5 +1,7 @@
 { config, pkgs, ... }:
-
+let
+  bashsettings = import ./bash.nix pkgs;
+in
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
@@ -41,6 +43,8 @@
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
+  programs.bash = bashsettings;
+
   home.file = {
     # # Building this configuration will create a copy of 'dotfiles/screenrc' in
     # # the Nix store. Activating the configuration will then make '~/.screenrc' a
@@ -51,6 +55,8 @@
     ".config/git/config".source = dotfiles/gitconfig;
     ".commit-template.txt".source = dotfiles/commit-template.txt;
     ".gitignore".source = dotfiles/gitignore;
+    ".git-completion.bash".source = dotfiles/git-completion.bash;
+
 
     # # You can also set the file content immediately.
     # ".gradle/gradle.properties".text = ''
