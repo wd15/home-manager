@@ -21,6 +21,9 @@
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
     # pkgs.hello
+    pkgs.tmux
+    pkgs.emacs
+    pkgs.git
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
@@ -44,6 +47,11 @@
     # # symlink to the Nix store copy.
     # ".screenrc".source = dotfiles/screenrc;
 
+    ".emacs".source = dotfiles/emacs;
+    ".config/git/config".source = dotfiles/gitconfig;
+    ".commit-template.txt".source = dotfiles/commit-template.txt;
+    ".gitignore".source = dotfiles/gitignore;
+
     # # You can also set the file content immediately.
     # ".gradle/gradle.properties".text = ''
     #   org.gradle.console=verbose
@@ -62,7 +70,7 @@
   #
   # if you don't want to manage your shell through Home Manager.
   home.sessionVariables = {
-    # EDITOR = "emacs";
+    EDITOR = "emacs -nw";
   };
 
   # Let Home Manager install and manage itself.

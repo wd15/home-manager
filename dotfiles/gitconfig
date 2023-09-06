@@ -1,0 +1,35 @@
+[user]
+	name = Daniel Wheeler
+	email = daniel.wheeler2@gmail.com
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+	ui = auto
+[color "status"]
+        changed = green
+        untracked = cyan
+[core]
+	editor = emacs -nw
+	excludesfile = ~/.gitignore
+	compression = 0
+	autocrlf = input
+[alias]
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+	unstage = reset HEAD --
+	last = log -1 HEAD
+	lg = log --oneline -10 --abbrev=12 --format=\"%C(yellow)%h %Creset%s\" --graph
+[commit]
+        template=~/.commit-template.txt
+[push]
+	default = matching
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+[init]
+	defaultBranch = main
