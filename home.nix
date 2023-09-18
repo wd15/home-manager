@@ -1,6 +1,7 @@
 { config, pkgs, ... }:
 let
   bashsettings = import ./bash.nix pkgs;
+  bashScripts = import ./shell.nix pkgs;
 in
 {
   # Home Manager needs a bit of information about you and the paths it should
@@ -39,7 +40,7 @@ in
     # (pkgs.writeShellScriptBin "my-hello" ''
     #   echo "Hello, ${config.home.username}!"
     # '')
-  ];
+  ] ++ bashScripts;
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.

@@ -10,7 +10,6 @@ pkgs: {
      mv = "mv -i";
      mkdir = "mkdir -p";
      edit = "emacs -nw";
-     vpn = "/opt/cisco/anyconnect/bin/vpnui";
   };
   initExtra = ''
     # Configure prompt
