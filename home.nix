@@ -1,11 +1,23 @@
+# TODO:
+# - set default applicatioins via xdg
+#   - obsidian
+#   - emacs
+#   - firefox as default browser
+#   - google chrome
+#   - tmux
+
 { config, pkgs, ... }:
 let
   bashsettings = import ./bash.nix pkgs;
   bashScripts = import ./shell.nix pkgs;
+  #pkgs = pkgs.config = {
+  #  allowUnfree = true;
+  #};
 in
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
+  nixpkgs.config.allowUnfreePredicate = (pkg: true);
   home.username = "wd15";
   home.homeDirectory = "/home/wd15";
 
@@ -24,10 +36,12 @@ in
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
     # pkgs.hello
-    pkgs.tmux
-    pkgs.emacs
+#    pkgs.tmux
+#    pkgs.emacs
     pkgs.git
-
+    pkgs.obsidian
+    # pkgs.firefox
+    # pkgs.google-chrome
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
     # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
@@ -58,6 +72,8 @@ in
     ".gitignore".source = dotfiles/gitignore;
     ".git-completion.bash".source = dotfiles/git-completion.bash;
 
+    # this file shouldn't be included as it keys
+    # ".config/nix/nix.conf".source = dotfiles/nix.conf;
 
     # # You can also set the file content immediately.
     # ".gradle/gradle.properties".text = ''
@@ -82,4 +98,23 @@ in
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+  targets.genericLinux.enable = true;
+  programs.tmux.enable = true;
+  programs.tmux.mouse = true;
+  programs.emacs.enable = true;
+  programs.firefox.enable = true;
+  xdg.mime.enable = true;
+  xdg.desktopEntries = {
+    my-browser = {
+      name = "My Browser";
+      genericName = "My Browser";
+      exec = "/home/wd15/.nix-profile/bin/firefox";
+      terminal = false;
+      categories = [ "Application" "WebBrowser" ];
+      mimeType = [ "text/html" "text/html" ];
+    };
+  };
+  programs.google-chrome.enable = true;
+  # programs.git.enable = true;
+
 }

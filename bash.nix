@@ -58,10 +58,11 @@ pkgs: {
     export HISTTIMEFORMAT="%d/%m/%y %T "
     export PATH=/usr/local/cuda-11.2/bin:''${PATH}
     export LD_LIBRARY_PATH=/usr/local/cuda-11.2/lib64:''${LD_LIBRARY_PATH}
-    export EDITOR=emacs
+    # export EDITOR=emacs
     export PATH="/usr/local/bin:~/bin/:$PATH"
     export LANG=en_US.UTF-8
     export LC_ALL=en_US.UTF-8
+    export BROWSER=firefox
     source /etc/bash_completion
     source ~/.git-completion.bash
     source ~/git/nixpkgs-review-checks/bashrc
