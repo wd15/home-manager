@@ -10,6 +10,8 @@ pkgs: {
      mv = "mv -i";
      mkdir = "mkdir -p";
      edit = "emacs -nw";
+     # make sure xscreesaver is installed and screensaver runs on startup
+     lock = "xscreensaver-command --lock";
   };
   initExtra = ''
     # Configure prompt
@@ -65,7 +67,6 @@ pkgs: {
     export BROWSER=firefox
     source /etc/bash_completion
     source ~/.git-completion.bash
-    source ~/git/nixpkgs-review-checks/bashrc
 
   '';
 
