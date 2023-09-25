@@ -11,7 +11,7 @@
                yaml-mode
                markdown-mode
                ox-pandoc
-               use-package     
+               use-package
 	             solarized-theme
 	             nix-mode
 	             nixos-options
@@ -22,7 +22,6 @@
    );
 
   extraConfig = ''
-  
 (setq standard-indent 2)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
@@ -61,6 +60,13 @@
 (set-face-foreground 'font-lock-comment-face "forest green")
 (set-face-foreground 'font-lock-string-face "forest green")
 (set-face-foreground 'font-lock-variable-name-face "cadet blue")
+
+(add-hook 'before-save-hook 'my-prog-nuke-trailing-whitespace)
+
+(defun my-prog-nuke-trailing-whitespace ()
+  (when (derived-mode-p 'prog-mode)
+    (delete-trailing-whitespace)))
+
   '';
 
 }
