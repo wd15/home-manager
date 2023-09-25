@@ -31,7 +31,6 @@ in
     pkgs.obsidian
     pkgs.firefox
     pkgs.google-chrome
-    pkgs.teamviewer
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
     # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
@@ -58,7 +57,7 @@ in
     #   org.gradle.daemon.idletimeout=3600000
     # '';
   };
-    
+
 
   # You can also manage environment variables but you will have to manually
   # source
@@ -91,8 +90,8 @@ in
   };
 
   targets.genericLinux.enable = true;
-  xdg.mime.enable = true;  
-  programs.home-manager.enable = true;  
+  xdg.mime.enable = true;
+  programs.home-manager.enable = true;
   home.extraProfileCommands = ''
     if [[ -d "$out/share/applications" ]] ; then
       ${pkgs.desktop-file-utils}/bin/update-desktop-database $out/share/applications
