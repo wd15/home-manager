@@ -1,0 +1,8 @@
+CanonicalizeHostname yes
+CanonicalDomains nist.gov
+
+Host ruth.nist.gov
+  ForwardAgent yes
+
+Host mr-french.nist.gov
+  ForwardAgent yes
