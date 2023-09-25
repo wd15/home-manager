@@ -47,6 +47,7 @@ in
     ".commit-template.txt".source = dotfiles/commit-template.txt;
     ".gitignore".source = dotfiles/gitignore;
     ".git-completion.bash".source = dotfiles/git-completion.bash;
+    ".ssh/config".source = dotfiles/ssh-config;
 
     # this file shouldn't be included as it keys
     # ".config/nix/nix.conf".source = dotfiles/nix.conf;
