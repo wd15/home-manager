@@ -31,6 +31,7 @@ in
     pkgs.obsidian
     pkgs.firefox
     pkgs.google-chrome
+    pkgs.git-lfs
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
     # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
@@ -38,10 +39,7 @@ in
     # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
   ] ++ bashScripts;
 
-
-
   home.file = {
-#    ".emacs".source = dotfiles/emacs;
     ".config/git/config".source = dotfiles/gitconfig;
     ".commit-template.txt".source = dotfiles/commit-template.txt;
     ".gitignore".source = dotfiles/gitignore;
@@ -77,18 +75,8 @@ in
   programs.emacs = emacssettings;
   programs.tmux.enable = true;
   programs.tmux.mouse = true;
-
-  xdg.desktopEntries = {
-    my-browser = {
-      name = "My Browser";
-      genericName = "My Browser";
-      exec = "/home/wd15/.nix-profile/bin/firefox";
-      terminal = false;
-      categories = [ "Application" "WebBrowser" ];
-      mimeType = [ "text/html" "text/html" ];
-    };
-  };
-
+  programs.firefox.enable = true;
+  programs.firefox.package = pkgs.firefox;
   targets.genericLinux.enable = true;
   xdg.mime.enable = true;
   programs.home-manager.enable = true;
