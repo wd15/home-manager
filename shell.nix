@@ -7,7 +7,7 @@ let
   vpn = pkgs.writeShellScriptBin "vpn" ''
     xdg-settings set default-web-browser google-chrome.desktop
     /opt/cisco/anyconnect/bin/vpnui
-    xdg-settings set default-web-browser my-browser.desktop
+    xdg-settings set default-web-browser firefox.desktop
   '';
 in
   [

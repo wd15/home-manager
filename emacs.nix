@@ -67,6 +67,8 @@
   (when (derived-mode-p 'prog-mode)
     (delete-trailing-whitespace)))
 
+;; insert spaces instead of tabs
+(setq-default indent-tabs-mode nil)
   '';
 
 }
