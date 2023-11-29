@@ -12,6 +12,7 @@ pkgs: {
      edit = "emacs -nw";
      # make sure xscreesaver is installed and screensaver runs on startup
      lock = "xscreensaver-command --lock";
+     firedef = "xdg-settings set default-web-browser firefox.desktop";
   };
   initExtra = ''
     # Configure prompt
@@ -29,26 +30,6 @@ pkgs: {
     }
     export -f show_nix_env
     export PS1="\[\e[1;34m\]\$(show_nix_env)\[\e[m\]"$PS1
-
-
-    # >>> conda initialize >>>
-    # !! Contents within this block are managed by 'conda init' !!
-    __conda_setup="$('/home/wd15/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-    if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-    else
-    if [ -f "/home/wd15/miniconda3/etc/profile.d/conda.sh" ]; then
-    . "/home/wd15/miniconda3/etc/profile.d/conda.sh"
-    else
-    export PATH="/home/wd15/miniconda3/bin:$PATH"
-    fi
-    fi
-    unset __conda_setup
-
-    if [ -f "/home/wd15/miniconda3/etc/profile.d/mamba.sh" ]; then
-    . "/home/wd15/miniconda3/etc/profile.d/mamba.sh"
-    fi
-    # <<< conda initialize <<<
 
 
     if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then

@@ -18,6 +18,8 @@
                python-mode
                elpy
                rainbow-identifiers
+               haskell-mode
+               git-commit
             ])
    );
 
@@ -46,10 +48,13 @@
 
 (define-key global-map "\C-l" 'goto-line)
 (define-key global-map "\M-/" 'hippie-expand)
+(define-key global-map "\C-t" 'comment-or-uncomment-region)
 
 (load-theme 'solarized-dark t)
 
 (require 'python-mode)
+(require 'haskell-mode)
+(require 'git-commit)
 ;;(elpy-enable)
 
 (setq inhibit-startup-message t)

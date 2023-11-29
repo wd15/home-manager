@@ -11,6 +11,9 @@ let
   bashsettings = import ./bash.nix pkgs;
   bashScripts = import ./shell.nix pkgs;
   emacssettings = import ./emacs.nix pkgs;
+  ghc = pkgs.haskellPackages.ghcWithPackages (ps: with ps; [
+    monad-par mtl split stack
+  ]);
 in
 {
   nixpkgs.config.allowUnfreePredicate = (pkg: true);
@@ -33,11 +36,22 @@ in
     pkgs.google-chrome
     pkgs.git-lfs
     pkgs.python3
-    # # It is sometimes useful to fine-tune packages, for example, by applying
-    # # overrides. You can do that directly here, just don't forget the
-    # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
-    # # fonts?
-    # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
+    pkgs.xournal
+    pkgs.texlive.combined.scheme-full
+    ghc
+    # See https://nixos.wiki/wiki/Python#micromamba and
+    # https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html
+    # To use:
+    #
+    #     $ eval "$(micromamba shell hook -s bash)"
+    #     $ micromamba activate my-environment
+    #
+    # remove env:
+    #
+    #     $ micromamba env remove -n my-environment
+    #
+    pkgs.micromamba
+    pkgs.poetry
   ] ++ bashScripts;
 
   home.file = {
@@ -47,15 +61,16 @@ in
     ".git-completion.bash".source = dotfiles/git-completion.bash;
     ".ssh/config".source = dotfiles/ssh-config;
     ".signature.txt".source = dotfiles/signature.txt;
+    ".mambarc".text = ''
+      channels:
+        - conda-forge
+      always_yes: true
+    '';
 
     # this file shouldn't be included as it keys
     # ".config/nix/nix.conf".source = dotfiles/nix.conf;
 
-    # # You can also set the file content immediately.
-    # ".gradle/gradle.properties".text = ''
-    #   org.gradle.console=verbose
-    #   org.gradle.daemon.idletimeout=3600000
-    # '';
+
   };
 
 
@@ -73,10 +88,17 @@ in
     EDITOR = "emacs -nw";
   };
 
+
   programs.bash = bashsettings;
   programs.emacs = emacssettings;
   programs.tmux.enable = true;
   programs.tmux.mouse = true;
+  programs.tmux.extraConfig = ''
+    # Copy tmux buffer to X clipboard
+    # run -b runs a shell command in background
+    # bind C-w run -b "tmux show-buffer | xclip -selection clipboard -i"
+    bind C-w run -b "tmux show-buffer | xclip -i"
+  '';
   programs.firefox.enable = true;
   programs.firefox.package = pkgs.firefox;
   targets.genericLinux.enable = true;
