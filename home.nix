@@ -52,6 +52,11 @@ in
     #
     pkgs.micromamba
     pkgs.poetry
+    pkgs.vivaldi
+    pkgs.pwgen
+    pkgs.coreutils
+    pkgs.bashInteractive
+    pkgs.jdk
   ] ++ bashScripts;
 
   home.file = {
@@ -101,6 +106,8 @@ in
   '';
   programs.firefox.enable = true;
   programs.firefox.package = pkgs.firefox;
+  programs.vivaldi.enable = true;
+  programs.vivaldi.package = pkgs.vivaldi;
   targets.genericLinux.enable = true;
   xdg.mime.enable = true;
   programs.home-manager.enable = true;

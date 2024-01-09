@@ -13,6 +13,7 @@ pkgs: {
      # make sure xscreesaver is installed and screensaver runs on startup
      lock = "xscreensaver-command --lock";
      firedef = "xdg-settings set default-web-browser firefox.desktop";
+     vivdef = "xdg-settings set default-web-browser vivaldi-stable.desktop";
   };
   initExtra = ''
     # Configure prompt
@@ -25,12 +26,11 @@ pkgs: {
 
     show_nix_env() {
     if [[ -n "$IN_NIX_SHELL" ]]; then
-    echo "(nix)"
+      echo "(nix)"
     fi
     }
     export -f show_nix_env
     export PS1="\[\e[1;34m\]\$(show_nix_env)\[\e[m\]"$PS1
-
 
     if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
     exec tmux
@@ -45,7 +45,7 @@ pkgs: {
     export PATH="/usr/local/bin:~/bin/:$PATH"
     export LANG=en_US.UTF-8
     export LC_ALL=en_US.UTF-8
-    export BROWSER=firefox
+    export BROWSER=vivaldi
     source /etc/bash_completion
     source ~/.git-completion.bash
 
