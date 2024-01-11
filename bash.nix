@@ -14,6 +14,7 @@ pkgs: {
      lock = "xscreensaver-command --lock";
      firedef = "xdg-settings set default-web-browser firefox.desktop";
      vivdef = "xdg-settings set default-web-browser vivaldi-stable.desktop";
+     bstart = "sudo systemctl start bluetooth.service";
   };
   initExtra = ''
     # Configure prompt
