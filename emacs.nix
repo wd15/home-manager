@@ -74,6 +74,10 @@
 
 ;; insert spaces instead of tabs
 (setq-default indent-tabs-mode nil)
+
+;; insert new line at end of file
+(setq require-final-newline t)
+
   '';
 
 }
