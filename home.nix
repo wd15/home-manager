@@ -12,7 +12,16 @@ let
   bashScripts = import ./shell.nix pkgs;
   emacssettings = import ./emacs.nix pkgs;
   ghc = pkgs.haskellPackages.ghcWithPackages (ps: with ps; [
-    monad-par mtl split stack
+    monad-par mtl split stack lens ihaskell
+  ]);
+  python = pkgs.python310.withPackages (p: [
+    p.jupyter
+    p.ipython
+    p.jupyterlab
+    p.notebook
+    p.traitlets
+    p.numpy
+    p.ipykernel
   ]);
 in
 {
@@ -35,7 +44,6 @@ in
     pkgs.firefox
     pkgs.google-chrome
     pkgs.git-lfs
-    pkgs.python3
     pkgs.xournal
     pkgs.texlive.combined.scheme-full
     ghc
@@ -57,6 +65,12 @@ in
     pkgs.coreutils
     pkgs.bashInteractive
     pkgs.jdk
+    pkgs.jq
+    python
+    pkgs.nixpkgs-review
+    pkgs.nodejs
+    pkgs.timer
+    # pkgs.ihaskell
   ] ++ bashScripts;
 
   home.file = {
@@ -99,7 +113,7 @@ in
   programs.tmux.enable = true;
   programs.tmux.mouse = true;
   programs.tmux.extraConfig = ''
-    # Copy tmux buffer to X clipboard
+    # Copytmux buffer to X clipboard
     # run -b runs a shell command in background
     # bind C-w run -b "tmux show-buffer | xclip -selection clipboard -i"
     bind C-w run -b "tmux show-buffer | xclip -i"
