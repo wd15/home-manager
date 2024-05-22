@@ -22,6 +22,7 @@ let
     p.traitlets
     p.numpy
     p.ipykernel
+    p.matplotlib
   ]);
 in
 {
@@ -70,6 +71,8 @@ in
     pkgs.nixpkgs-review
     pkgs.nodejs
     pkgs.timer
+    pkgs.zotero
+    pkgs.dream2nix
     # pkgs.ihaskell
   ] ++ bashScripts;
 
