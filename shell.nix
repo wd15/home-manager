@@ -9,8 +9,13 @@ let
     /opt/cisco/anyconnect/bin/vpnui
     xdg-settings set default-web-browser vivaldi-stable.desktop
   '';
+  mouse = pkgs.writeShellScriptBin "mouse" ''
+    sudo systemctl start bluetooth.service
+  '';
+  
 in
   [
     backup
     vpn
+    mouse
   ]

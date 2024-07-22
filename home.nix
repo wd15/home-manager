@@ -72,7 +72,8 @@ in
     pkgs.nodejs
     pkgs.timer
     pkgs.zotero
-    pkgs.dream2nix
+    pkgs.pandoc
+    pkgs.inkscape
     # pkgs.ihaskell
   ] ++ bashScripts;
 
