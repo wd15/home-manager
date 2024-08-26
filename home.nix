@@ -74,6 +74,7 @@ in
     pkgs.zotero
     pkgs.pandoc
     pkgs.inkscape
+    pkgs.imagemagick
     # pkgs.ihaskell
   ] ++ bashScripts;
 

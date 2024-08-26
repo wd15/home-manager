@@ -15,6 +15,7 @@ pkgs: {
      firedef = "xdg-settings set default-web-browser firefox.desktop";
      vivdef = "xdg-settings set default-web-browser vivaldi-stable.desktop";
      bstart = "sudo systemctl start bluetooth.service";
+     thermocalc = "/opt/Thermo-Calc/2024b/Thermo-Calc.sh";
   };
   initExtra = ''
     # Configure prompt
@@ -47,6 +48,8 @@ pkgs: {
     export LANG=en_US.UTF-8
     export LC_ALL=en_US.UTF-8
     export BROWSER=vivaldi
+    export TC24B_HOME=/opt/Thermo-Calc/2024b
+    export LSHOST=sequoia.nist.gov
     source /etc/bash_completion
     source ~/.git-completion.bash
 
