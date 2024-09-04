@@ -16,6 +16,8 @@ pkgs: {
      vivdef = "xdg-settings set default-web-browser vivaldi-stable.desktop";
      bstart = "sudo systemctl start bluetooth.service";
      thermocalc = "/opt/Thermo-Calc/2024b/Thermo-Calc.sh";
+     ni = "~/.cargo/bin/nix-user-chroot /usr/local/wd15/nix bash -l";
+     ansys = "/usr/local/ansys_inc/v194/ansys/bin/ansys194";
   };
   initExtra = ''
     # Configure prompt
@@ -50,9 +52,10 @@ pkgs: {
     export BROWSER=vivaldi
     export TC24B_HOME=/opt/Thermo-Calc/2024b
     export LSHOST=sequoia.nist.gov
+    export CDPATH=.:/usr/local/wd15/am-dt-twin-modeling
     source /etc/bash_completion
     source ~/.git-completion.bash
-
+   
   '';
 
 }

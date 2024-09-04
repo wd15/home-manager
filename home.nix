@@ -15,14 +15,14 @@ let
     monad-par mtl split stack lens ihaskell
   ]);
   python = pkgs.python310.withPackages (p: [
-    p.jupyter
-    p.ipython
-    p.jupyterlab
-    p.notebook
-    p.traitlets
+#    p.jupyter
+#    p.ipython
+#    p.jupyterlab
+#    p.notebook
+#    p.traitlets
     p.numpy
-    p.ipykernel
-    p.matplotlib
+#    p.ipykernel
+#    p.matplotlib
   ]);
 in
 {
@@ -41,13 +41,13 @@ in
 
   home.packages = [
     pkgs.git
-    pkgs.obsidian
-    pkgs.firefox
-    pkgs.google-chrome
-    pkgs.git-lfs
-    pkgs.xournal
-    pkgs.texlive.combined.scheme-full
-    ghc
+ #   pkgs.obsidian
+ #   pkgs.firefox
+ #   pkgs.google-chrome
+ #   pkgs.git-lfs
+#    pkgs.xournal
+#    pkgs.texlive.combined.scheme-full
+#    ghc
     # See https://nixos.wiki/wiki/Python#micromamba and
     # https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html
     # To use:
@@ -61,20 +61,20 @@ in
     #
     pkgs.micromamba
     pkgs.poetry
-    pkgs.vivaldi
+#    pkgs.vivaldi
     pkgs.pwgen
     pkgs.coreutils
     pkgs.bashInteractive
-    pkgs.jdk
-    pkgs.jq
+#    pkgs.jdk
+#    pkgs.jq
     python
     pkgs.nixpkgs-review
     pkgs.nodejs
     pkgs.timer
-    pkgs.zotero
-    pkgs.pandoc
-    pkgs.inkscape
-    pkgs.imagemagick
+#    pkgs.zotero
+#    pkgs.pandoc
+#    pkgs.inkscape
+#    pkgs.imagemagick
     # pkgs.ihaskell
   ] ++ bashScripts;
 
@@ -85,6 +85,7 @@ in
     ".git-completion.bash".source = dotfiles/git-completion.bash;
     ".ssh/config".source = dotfiles/ssh-config;
     ".signature.txt".source = dotfiles/signature.txt;
+#    ".profile".source = dotfile/profile;
     ".mambarc".text = ''
       channels:
         - conda-forge
@@ -123,10 +124,10 @@ in
     # bind C-w run -b "tmux show-buffer | xclip -selection clipboard -i"
     bind C-w run -b "tmux show-buffer | xclip -i"
   '';
-  programs.firefox.enable = true;
-  programs.firefox.package = pkgs.firefox;
-  programs.vivaldi.enable = true;
-  programs.vivaldi.package = pkgs.vivaldi;
+#  programs.firefox.enable = true;
+#  programs.firefox.package = pkgs.firefox;
+#  programs.vivaldi.enable = true;
+#  programs.vivaldi.package = pkgs.vivaldi;
   targets.genericLinux.enable = true;
   xdg.mime.enable = true;
   programs.home-manager.enable = true;
@@ -134,6 +135,26 @@ in
     if [[ -d "$out/share/applications" ]] ; then
       ${pkgs.desktop-file-utils}/bin/update-desktop-database $out/share/applications
     fi
+
+if [ -n "$BASH_VERSION" ]; then
+    # include .bashrc if it exists
+    if [ -f "$HOME/.bashrc" ]; then
+        . "$HOME/.bashrc"
+    fi
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
+if [ -e /home/wd15/.nix-profile/etc/profile.d/nix.sh ]; then . /home/wd15/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+
   '';
 
 
