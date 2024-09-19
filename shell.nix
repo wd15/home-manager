@@ -6,7 +6,7 @@ let
   '';
   vpn = pkgs.writeShellScriptBin "vpn" ''
     xdg-settings set default-web-browser google-chrome.desktop
-    /opt/cisco/anyconnect/bin/vpnui
+    /opt/cisco/secureclient/bin/vpnui
     xdg-settings set default-web-browser vivaldi-stable.desktop
   '';
   mouse = pkgs.writeShellScriptBin "mouse" ''

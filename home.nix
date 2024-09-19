@@ -23,6 +23,8 @@ let
     p.numpy
     p.ipykernel
     p.matplotlib
+    p.pandas
+    p.jupyter
   ]);
 in
 {
@@ -75,6 +77,7 @@ in
     pkgs.pandoc
     pkgs.inkscape
     pkgs.imagemagick
+    pkgs.ansible
     # pkgs.ihaskell
   ] ++ bashScripts;
 

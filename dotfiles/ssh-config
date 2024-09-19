@@ -6,3 +6,7 @@ Host ruth.nist.gov
 
 Host mr-french.nist.gov
   ForwardAgent yes
+
+Host cricket.nist.gov
+  ForwardAgent yes
+

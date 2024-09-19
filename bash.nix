@@ -16,6 +16,7 @@ pkgs: {
      vivdef = "xdg-settings set default-web-browser vivaldi-stable.desktop";
      bstart = "sudo systemctl start bluetooth.service";
      thermocalc = "/opt/Thermo-Calc/2024b/Thermo-Calc.sh";
+     cricket = "ssh -t cricket '~/ni'";
   };
   initExtra = ''
     # Configure prompt
