@@ -78,6 +78,8 @@
 ;; insert new line at end of file
 (setq require-final-newline t)
 
+(setq-default fill-column 79)
+
   '';
 
 }
