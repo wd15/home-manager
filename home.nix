@@ -78,6 +78,7 @@ in
     pkgs.inkscape
     pkgs.imagemagick
     pkgs.ansible
+    pkgs.uv
     # pkgs.ihaskell
   ] ++ bashScripts;
 
@@ -92,7 +93,12 @@ in
       channels:
         - conda-forge
       always_yes: true
+      custom_channels:
+        conda-forge: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge
     '';
+      # channels:
+      #   - conda-forge
+      # always_yes: true
 
     # this file shouldn't be included as it keys
     # ".config/nix/nix.conf".source = dotfiles/nix.conf;

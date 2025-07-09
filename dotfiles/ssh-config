@@ -10,3 +10,8 @@ Host mr-french.nist.gov
 Host cricket.nist.gov
   ForwardAgent yes
 
+Host blackbird.nist.gov
+  ForwardAgent yes
+  
+Host *
+  ForwardAgent yes

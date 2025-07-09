@@ -27,13 +27,15 @@ pkgs: {
     PS1="[\\u@\\h:\\w]\[\e[1;34m\]\$(parse_git_branch)\[\e[m\]\[\e[1;32m\]$\[\e[m\] "
     PS1="\[\e[1;32m\]''${PS1}\[\e[m\]"
 
-    show_nix_env() {
-    if [[ -n "$IN_NIX_SHELL" ]]; then
-      echo "(nix)"
+    show_shell_level() {
+    if [[ $SHLVL -gt 1 ]]; then
+      echo -e '\xe2\x9a\xa1'
     fi
     }
-    export -f show_nix_env
-    export PS1="\[\e[1;34m\]\$(show_nix_env)\[\e[m\]"$PS1
+    export -f show_shell_level
+
+    export PS1="\[\e[1;34m\]\$(show_shell_level)\[\e[m\]"$PS1
+
 
     if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
     exec tmux
@@ -53,6 +55,19 @@ pkgs: {
     export LSHOST=sequoia.nist.gov
     source /etc/bash_completion
     source ~/.git-completion.bash
+
+    # >>> mamba initialize >>>
+    # !! Contents within this block are managed by 'mamba init' !!
+    export MAMBA_EXE='/nix/store/p5z4d0vcafi64l7l3crnjjml8mhx7z13-micromamba-1.5.4/bin/micromamba';
+    export MAMBA_ROOT_PREFIX='/home/wd15/micromamba';
+    __mamba_setup="$("$MAMBA_EXE" shell hook --shell bash --root-prefix "$MAMBA_ROOT_PREFIX" 2> /dev/null)"
+    if [ $? -eq 0 ]; then
+       eval "$__mamba_setup"
+    else
+      alias micromamba="$MAMBA_EXE"  # Fallback on help from mamba activate
+    fi
+    unset __mamba_setup
+    # <<< mamba initialize <<<
 
   '';
 

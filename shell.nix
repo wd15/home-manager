@@ -15,10 +15,14 @@ let
   jupyter-cricket = pkgs.writeShellScriptBin "jupyter-cricket" ''
     ssh -t -L 8889:127.0.0.1:8889 cricket '~/.cargo/bin/nix-user-chroot /usr/local/wd15/nix bash -l jupyter-remote'
   '';
+  bat = pkgs.writeShellScriptBin "bat" ''
+    upower -d | grep time
+  '';
 in
   [
     backup
     vpn
     mouse
     jupyter-cricket
+    bat
   ]
