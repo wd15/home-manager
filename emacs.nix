@@ -20,6 +20,7 @@
                rainbow-identifiers
                haskell-mode
                git-commit
+               gptel
             ])
    );
 
@@ -58,7 +59,7 @@
 ;;(elpy-enable)
 
 (setq inhibit-startup-message t)
-(global-linum-mode t)
+(global-display-line-numbers-mode 1)
 
 (add-hook 'python-mode 'rainbow-identifiers-mode)
 
@@ -79,6 +80,33 @@
 (setq require-final-newline t)
 
 (setq-default fill-column 79)
+
+;; using Gemini
+
+(use-package gptel
+  :ensure t
+  :config
+  (setq gptel-default-mode 'org-mode)
+
+  (setq
+   ;; 1. Set the default model (MUST be a string, not a symbol)
+   gptel-model "gemini-2.5-pro"
+
+   ;; 2. Define the backend
+   gptel-backend
+   (gptel-make-gemini "Gemini"
+     :key (gptel-api-key-from-auth-source "gemini.google.com")
+     :stream t
+     :models '("gemini-2.5-pro"    ;; Complex tasks
+               "gemini-3-flash"    ;; Fast/Chat
+               "gemini-2.0-flash"  ;; Fallback
+               "gemini-2.5-flash"))))
+
+;; Recommended Keybindings
+(global-set-key (kbd "C-c g c") 'gptel)       ;; Start a new chat buffer
+(global-set-key (kbd "C-c g s") 'gptel-send)  ;; Send current region/buffer to Gemini
+(global-set-key (kbd "C-c g m") 'gptel-menu)  ;; Open the menu to change models/settings
+
 
   '';
 

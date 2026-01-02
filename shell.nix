@@ -18,6 +18,9 @@ let
   bat = pkgs.writeShellScriptBin "bat" ''
     upower -d | grep time
   '';
+  conda-activate =  pkgs.writeShellScriptBin "conda-activate" ''
+    eval "$(/home/wd15/miniforge3/bin/conda shell.bash hook)"
+  '';
 in
   [
     backup
@@ -25,4 +28,5 @@ in
     mouse
     jupyter-cricket
     bat
+    conda-activate
   ]

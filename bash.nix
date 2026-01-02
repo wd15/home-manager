@@ -28,19 +28,23 @@ pkgs: {
     PS1="\[\e[1;32m\]''${PS1}\[\e[m\]"
 
     show_shell_level() {
-    if [[ $SHLVL -gt 1 ]]; then
-      echo -e '\xe2\x9a\xa1'
-    fi
+      if [[ -v IN_NIX_SHELL ]]
+      then
+        echo -e -n '(nix)'
+      fi
+      if [[ $SHLVL -gt 2 ]]; then
+        for in in $( eval echo {3..$SHLVL} );
+        do
+          echo -e -n '\xe2\x9a\xa1'
+        done
+      fi
     }
     export -f show_shell_level
-
     export PS1="\[\e[1;34m\]\$(show_shell_level)\[\e[m\]"$PS1
 
-
     if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
-    exec tmux
+        { tmux; [ ! -f ~/dontdie ] && exit || rm ~/dontdie; }
     fi
-
 
     eval `dircolors -b`
     export HISTTIMEFORMAT="%d/%m/%y %T "
@@ -55,6 +59,7 @@ pkgs: {
     export LSHOST=sequoia.nist.gov
     source /etc/bash_completion
     source ~/.git-completion.bash
+    export REQUESTS_CA_BUNDLE="/etc/ssl/certs/ca-certificates.crt"
 
     # >>> mamba initialize >>>
     # !! Contents within this block are managed by 'mamba init' !!
@@ -69,6 +74,28 @@ pkgs: {
     unset __mamba_setup
     # <<< mamba initialize <<<
 
+
+    # # >>> conda initialize >>>
+    # # !! Contents within this block are managed by 'conda init' !!
+    # __conda_setup="$('/home/wd15/miniforge3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+    # if [ $? -eq 0 ]; then
+    #    eval "$__conda_setup"
+    # else
+    #     if [ -f "/home/wd15/miniforge3/etc/profile.d/conda.sh" ]; then
+    #         . "/home/wd15/miniforge3/etc/profile.d/conda.sh"
+    #     else
+    #         export PATH="/home/wd15/miniforge3/bin:$PATH"
+    #     fi
+    # fi
+    # unset __conda_setup
+    # # <<< conda initialize <<<
+
+    ## Switch on Conda
+    use_conda() {
+      source ~/miniforge3/etc/profile.d/conda.sh
+      export PATH="/home/wd15/miniforge3/bin:$PATH"
+    }
+      
   '';
 
 }

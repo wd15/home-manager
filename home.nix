@@ -14,13 +14,13 @@ let
   ghc = pkgs.haskellPackages.ghcWithPackages (ps: with ps; [
     monad-par mtl split stack lens ihaskell
   ]);
-  python = pkgs.python310.withPackages (p: [
+  python = pkgs.python313.withPackages (p: [
     p.jupyter
     p.ipython
     p.jupyterlab
     p.notebook
     p.traitlets
-    p.numpy
+#    p.numpy
     p.ipykernel
     p.matplotlib
     p.pandas
@@ -39,7 +39,7 @@ in
   # You should not change this value, even if you update Home Manager. If you do
   # want to update the value, then make sure to first check the Home Manager
   # release notes.
-  home.stateVersion = "23.05"; # Please read the comment before changing.
+  home.stateVersion = "24.05"; # Please read the comment before changing.
 
   home.packages = [
     pkgs.git
@@ -69,7 +69,7 @@ in
     pkgs.bashInteractive
     pkgs.jdk
     pkgs.jq
-    python
+    # python
     pkgs.nixpkgs-review
     pkgs.nodejs
     pkgs.timer
@@ -79,6 +79,7 @@ in
     pkgs.imagemagick
     pkgs.ansible
     pkgs.uv
+    pkgs.gnuplot
     # pkgs.ihaskell
   ] ++ bashScripts;
 
@@ -93,8 +94,9 @@ in
       channels:
         - conda-forge
       always_yes: true
-      custom_channels:
-        conda-forge: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge
+      proxy_servers:
+        http:  http://qv74thju04.proxy.cloudflare-gateway.com
+        https: https://qv74thju04.proxy.cloudflare-gateway.com:443
     '';
       # channels:
       #   - conda-forge
