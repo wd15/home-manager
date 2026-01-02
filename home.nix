@@ -47,7 +47,7 @@ in
     pkgs.firefox
     pkgs.google-chrome
     pkgs.git-lfs
-    pkgs.xournal
+    # pkgs.xournal
     pkgs.texlive.combined.scheme-full
     ghc
     # See https://nixos.wiki/wiki/Python#micromamba and
