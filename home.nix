@@ -1,95 +1,89 @@
-# TODO:
-# - set default applicatioins via xdg
-#   - obsidian
-#   - emacs
-#   - firefox as default browser
-#   - google chrome
-#   - tmux
-
 { config, pkgs, ... }:
-let
-  bashsettings = import ./bash.nix pkgs;
-  bashScripts = import ./shell.nix pkgs;
-  emacssettings = import ./emacs.nix pkgs;
-  ghc = pkgs.haskellPackages.ghcWithPackages (ps: with ps; [
-    monad-par mtl split stack lens ihaskell
-  ]);
-  python = pkgs.python313.withPackages (p: [
-    p.jupyter
-    p.ipython
-    p.jupyterlab
-    p.notebook
-    p.traitlets
-#    p.numpy
-    p.ipykernel
-    p.matplotlib
-    p.pandas
-    p.jupyter
-  ]);
-in
+
 {
-  nixpkgs.config.allowUnfreePredicate = (pkg: true);
+  # 1. Modern Import: Let Home Manager handle module loading.
+  # Ensure ./bash.nix, ./emacs.nix, and ./shell.nix define a top-level module
+  # (e.g., `{ pkgs, ... }: { ... }`) rather than just returning a value.
+  imports = [
+    ./bash.nix
+    ./emacs.nix
+    ./shell.nix
+  ];
+
+  # 2. Allow Unfree: Redundant if set in flake.nix, but good safety here.
+  nixpkgs.config.allowUnfreePredicate = pkg: true;
+
   home.username = "wd15";
   home.homeDirectory = "/home/wd15";
+  home.stateVersion = "24.05";
 
-  # This value determines the Home Manager release that your configuration is
-  # compatible with. This helps avoid breakage when a new Home Manager release
-  # introduces backwards incompatible changes.
-  #
-  # You should not change this value, even if you update Home Manager. If you do
-  # want to update the value, then make sure to first check the Home Manager
-  # release notes.
-  home.stateVersion = "24.05"; # Please read the comment before changing.
+  # 3. Targets: Essential for non-NixOS systems (handles XDG paths, etc.)
+  targets.genericLinux.enable = true;
+  xdg.mime.enable = true;
 
-  home.packages = [
-    pkgs.git
-    pkgs.obsidian
-    pkgs.firefox
-    pkgs.google-chrome
-    pkgs.git-lfs
-    # pkgs.xournal
-    pkgs.texlive.combined.scheme-full
-    ghc
-    # See https://nixos.wiki/wiki/Python#micromamba and
-    # https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html
-    # To use:
-    #
-    #     $ eval "$(micromamba shell hook -s bash)"
-    #     $ micromamba activate my-environment
-    #
-    # remove env:
-    #
-    #     $ micromamba env remove -n my-environment
-    #
-    pkgs.micromamba
-    pkgs.poetry
-    pkgs.vivaldi
-    pkgs.pwgen
-    pkgs.coreutils
-    pkgs.bashInteractive
-    pkgs.jdk
-    pkgs.jq
-    # python
-    pkgs.nixpkgs-review
-    pkgs.nodejs
-    pkgs.timer
-    pkgs.zotero
-    pkgs.pandoc
-    pkgs.inkscape
-    pkgs.imagemagick
-    pkgs.ansible
-    pkgs.uv
-    pkgs.gnuplot
-    # pkgs.ihaskell
-  ] ++ bashScripts;
+  # 4. Package Definitions (Cleaned up)
+  home.packages = with pkgs; [
+    # Core Utilities
+    git
+    git-lfs
+    coreutils
+    bashInteractive
+    jq
+    pwgen
+    timer
+    nixpkgs-review
+    ansible
 
+    # Programming / Runtimes
+    jdk
+    nodejs
+    uv
+    poetry
+    micromamba
+    # Note: Haskell package moved to 'let' below if you need specific config,
+    # otherwise install 'ghc' directly here.
+
+    # Applications
+    obsidian
+    firefox
+    google-chrome
+    vivaldi
+    zotero
+    inkscape
+    gnuplot
+
+    # Document Processing
+    pandoc
+    imagemagick
+    texlive.combined.scheme-full
+
+    # Python Environment (custom definition below)
+    (python313.withPackages (p: [
+      p.jupyter
+      p.ipython
+      p.jupyterlab
+      p.notebook
+      p.traitlets
+      p.ipykernel
+      p.matplotlib
+      p.pandas
+    ]))
+
+    # Haskell Environment (custom definition)
+    (haskellPackages.ghcWithPackages (ps: with ps; [
+      monad-par mtl split stack lens ihaskell
+    ]))
+  ];
+
+  # 5. File Management
   home.file = {
-    ".config/git/config".source = dotfiles/gitconfig;
-    ".commit-template.txt".source = dotfiles/commit-template.txt;
-    ".gitignore".source = dotfiles/gitignore;
-    ".git-completion.bash".source = dotfiles/git-completion.bash;
-    ".ssh/config".source = dotfiles/ssh-config;
-    ".signature.txt".source = dotfiles/signature.txt;
+    ".config/git/config".source = ./dotfiles/gitconfig;
+    ".commit-template.txt".source = ./dotfiles/commit-template.txt;
+    ".gitignore".source = ./dotfiles/gitignore;
+    ".git-completion.bash".source = ./dotfiles/git-completion.bash;
+    ".ssh/config".source = ./dotfiles/ssh-config;
+    ".signature.txt".source = ./dotfiles/signature.txt;
+
     ".mambarc".text = ''
       channels:
         - conda-forge
@@ -98,55 +92,36 @@ in
         http:  http://qv74thju04.proxy.cloudflare-gateway.com
         https: https://qv74thju04.proxy.cloudflare-gateway.com:443
     '';
-      # channels:
-      #   - conda-forge
-      # always_yes: true
-
-    # this file shouldn't be included as it keys
-    # ".config/nix/nix.conf".source = dotfiles/nix.conf;
-
-
   };
 
-
-  # You can also manage environment variables but you will have to manually
-  # source
-  #
-  #  ~/.nix-profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  /etc/profiles/per-user/wd15/etc/profile.d/hm-session-vars.sh
-  #
-  # if you don't want to manage your shell through Home Manager.
+  # 6. Session Variables
   home.sessionVariables = {
     EDITOR = "emacs -nw";
+    # Fix for micromamba shell initialization
+    MAMBA_EXE = "${pkgs.micromamba}/bin/micromamba";
   };
 
-
-  programs.bash = bashsettings;
-  programs.emacs = emacssettings;
-  programs.tmux.enable = true;
-  programs.tmux.mouse = true;
-  programs.tmux.extraConfig = ''
-    # Copytmux buffer to X clipboard
-    # run -b runs a shell command in background
-    # bind C-w run -b "tmux show-buffer | xclip -selection clipboard -i"
-    bind C-w run -b "tmux show-buffer | xclip -i"
-  '';
-  programs.firefox.enable = true;
-  programs.firefox.package = pkgs.firefox;
-  programs.vivaldi.enable = true;
-  programs.vivaldi.package = pkgs.vivaldi;
-  targets.genericLinux.enable = true;
-  xdg.mime.enable = true;
+  # 7. Program Configurations
   programs.home-manager.enable = true;
+
+  # Browsers
+  programs.firefox.enable = true;
+  programs.vivaldi.enable = true;
+
+  # Tmux
+  programs.tmux = {
+    enable = true;
+    mouse = true;
+    extraConfig = ''
+      # Copy tmux buffer to X clipboard
+      bind C-w run -b "tmux show-buffer | ${pkgs.xclip}/bin/xclip -i"
+    '';
+  };
+
+  # 8. Extra Profile Commands (Desktop Database Update)
   home.extraProfileCommands = ''
     if [[ -d "$out/share/applications" ]] ; then
       ${pkgs.desktop-file-utils}/bin/update-desktop-database $out/share/applications
     fi
   '';
-
-
-
 }

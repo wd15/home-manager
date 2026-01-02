@@ -1,113 +1,112 @@
-{ pkgs, ...}:
+{ pkgs, ... }:
+
 {
-  enable=true;
-  package=pkgs.emacs;
-  extraPackages = (
-     epkgs: (with epkgs; [
-               better-defaults
-               material-theme
-               afternoon-theme
-               yaml
-               yaml-mode
-               markdown-mode
-               ox-pandoc
-               use-package
-	             solarized-theme
-	             nix-mode
-	             nixos-options
-               python-mode
-               elpy
-               rainbow-identifiers
-               haskell-mode
-               git-commit
-               gptel
-            ])
-   );
+  programs.emacs = {
+    enable = true;
+    package = pkgs.emacs;
 
-  extraConfig = ''
-(setq standard-indent 2)
-(scroll-bar-mode -1)
-(tool-bar-mode -1)
-(menu-bar-mode -1)
-(defun shift-text (distance)
-  (if (use-region-p)
-      (let ((mark (mark)))
-        (save-excursion
-          (indent-rigidly (region-beginning)
-                          (region-end)
-                          distance)
-          (push-mark mark t t)
-          (setq deactivate-mark nil)))
-    (indent-rigidly (line-beginning-position)
-                    (line-end-position)
-                    distance)))
+    extraPackages = epkgs: with epkgs; [
+      better-defaults
+      material-theme
+      afternoon-theme
+      yaml
+      yaml-mode
+      markdown-mode
+      ox-pandoc
+      use-package
+      solarized-theme
+      nix-mode
+      nixos-options
+      python-mode
+      elpy
+      rainbow-identifiers
+      haskell-mode
+      git-commit
+      gptel
+    ];
 
-(autoload 'markdown-mode "markdown-mode.el"
-   "Major mode for editing Markdown files" t)
-(setq auto-mode-alist
-   (cons '("\\.md" . markdown-mode) auto-mode-alist))
+    extraConfig = ''
+      (setq standard-indent 2)
+      (scroll-bar-mode -1)
+      (tool-bar-mode -1)
+      (menu-bar-mode -1)
 
-(define-key global-map "\C-l" 'goto-line)
-(define-key global-map "\M-/" 'hippie-expand)
-(define-key global-map "\C-t" 'comment-or-uncomment-region)
+      (defun shift-text (distance)
+        (if (use-region-p)
+            (let ((mark (mark)))
+              (save-excursion
+                (indent-rigidly (region-beginning)
+                                (region-end)
+                                distance)
+                (push-mark mark t t)
+                (setq deactivate-mark nil)))
+          (indent-rigidly (line-beginning-position)
+                          (line-end-position)
+                          distance)))
 
-(load-theme 'solarized-dark t)
+      (autoload 'markdown-mode "markdown-mode.el"
+         "Major mode for editing Markdown files" t)
+      (setq auto-mode-alist
+         (cons '("\\.md" . markdown-mode) auto-mode-alist))
 
-(require 'python-mode)
-(require 'haskell-mode)
-(require 'git-commit)
-;;(elpy-enable)
+      (define-key global-map "\C-l" 'goto-line)
+      (define-key global-map "\M-/" 'hippie-expand)
+      (define-key global-map "\C-t" 'comment-or-uncomment-region)
 
-(setq inhibit-startup-message t)
-(global-display-line-numbers-mode 1)
+      (load-theme 'solarized-dark t)
 
-(add-hook 'python-mode 'rainbow-identifiers-mode)
+      (require 'python-mode)
+      (require 'haskell-mode)
+      (require 'git-commit)
+      ;;(elpy-enable)
 
-(set-face-foreground 'font-lock-comment-face "forest green")
-(set-face-foreground 'font-lock-string-face "forest green")
-(set-face-foreground 'font-lock-variable-name-face "cadet blue")
+      (setq inhibit-startup-message t)
+      (global-display-line-numbers-mode 1)
 
-(add-hook 'before-save-hook 'my-prog-nuke-trailing-whitespace)
+      (add-hook 'python-mode 'rainbow-identifiers-mode)
 
-(defun my-prog-nuke-trailing-whitespace ()
-  (when (derived-mode-p 'prog-mode)
-    (delete-trailing-whitespace)))
+      (set-face-foreground 'font-lock-comment-face "forest green")
+      (set-face-foreground 'font-lock-string-face "forest green")
+      (set-face-foreground 'font-lock-variable-name-face "cadet blue")
 
-;; insert spaces instead of tabs
-(setq-default indent-tabs-mode nil)
+      (add-hook 'before-save-hook 'my-prog-nuke-trailing-whitespace)
 
-;; insert new line at end of file
-(setq require-final-newline t)
+      (defun my-prog-nuke-trailing-whitespace ()
+        (when (derived-mode-p 'prog-mode)
+          (delete-trailing-whitespace)))
 
-(setq-default fill-column 79)
+      ;; insert spaces instead of tabs
+      (setq-default indent-tabs-mode nil)
 
-;; using Gemini
+      ;; insert new line at end of file
+      (setq require-final-newline t)
 
-(use-package gptel
-  :ensure t
-  :config
-  (setq gptel-default-mode 'org-mode)
+      (setq-default fill-column 79)
 
-  (setq
-   ;; 1. Set the default model (MUST be a string, not a symbol)
-   gptel-model "gemini-2.5-pro"
+      ;; using Gemini
+      (use-package gptel
+        :ensure t
+        :config
+        (setq gptel-default-mode 'org-mode)
 
-   ;; 2. Define the backend
-   gptel-backend
-   (gptel-make-gemini "Gemini"
-     :key (gptel-api-key-from-auth-source "gemini.google.com")
-     :stream t
-     :models '("gemini-2.5-pro"    ;; Complex tasks
-               "gemini-3-flash"    ;; Fast/Chat
-               "gemini-2.0-flash"  ;; Fallback
-               "gemini-2.5-flash"))))
+        (setq
+         ;; 1. Set the default model (MUST be a string, not a symbol)
+         gptel-model "gemini-2.5-pro"
 
-;; Recommended Keybindings
-(global-set-key (kbd "C-c g c") 'gptel)       ;; Start a new chat buffer
-(global-set-key (kbd "C-c g s") 'gptel-send)  ;; Send current region/buffer to Gemini
-(global-set-key (kbd "C-c g m") 'gptel-menu)  ;; Open the menu to change models/settings
+         ;; 2. Define the backend
+         gptel-backend
+         (gptel-make-gemini "Gemini"
+           :key (gptel-api-key-from-auth-source "gemini.google.com")
+           :stream t
+           :models '("gemini-2.5-pro"    ;; Complex tasks
+                     "gemini-3-flash"    ;; Fast/Chat
+                     "gemini-2.0-flash"  ;; Fallback
+                     "gemini-2.5-flash"))))
 
-
-  '';
-
+      ;; Recommended Keybindings
+      (global-set-key (kbd "C-c g c") 'gptel)       ;; Start a new chat buffer
+      (global-set-key (kbd "C-c g s") 'gptel-send)  ;; Send current region/buffer to Gemini
+      (global-set-key (kbd "C-c g m") 'gptel-menu)  ;; Open the menu to change models/settings
+    '';
+  };
 }
