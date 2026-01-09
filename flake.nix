@@ -2,7 +2,6 @@
   description = "Home Manager configuration of wd15";
 
   inputs = {
-    # Specify the source of Home Manager and Nixpkgs.
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
@@ -13,17 +12,20 @@
   outputs = { nixpkgs, home-manager, ... }:
     let
       system = "x86_64-linux";
-      config = { allowUnfree = true; };
-      pkgs = nixpkgs.legacyPackages.${system};
     in {
       homeConfigurations."wd15" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        # Specify your home configuration modules here, for example,
-        # the path to your home.nix.
-        modules = [ ./home.nix ];
+        # 1. We pass the raw nixpkgs input so Home Manager can instantiate it
+        pkgs = nixpkgs.legacyPackages.${system};
 
-        # Optionally use extraSpecialArgs
-        # to pass through arguments to home.nix
+        # 2. We pass configuration modules
+        modules = [
+          ./home.nix
+
+          # 3. We configure nixpkgs here instead of in the 'let' block
+          {
+            nixpkgs.config.allowUnfree = true;
+          }
+        ];
       };
     };
 }

@@ -33,6 +33,7 @@
     timer
     nixpkgs-review
     ansible
+    nix-ld
 
     # Programming / Runtimes
     jdk
@@ -51,6 +52,7 @@
     zotero
     inkscape
     gnuplot
+    code-cursor
 
     # Document Processing
     pandoc
@@ -124,4 +126,9 @@
       ${pkgs.desktop-file-utils}/bin/update-desktop-database $out/share/applications
     fi
   '';
+
+  programs.vscode = {
+    enable = true;
+    package = pkgs.vscode-fhs;
+  };
 }
