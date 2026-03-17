@@ -23,6 +23,8 @@
 
   # 4. Package Definitions (Cleaned up)
   home.packages = with pkgs; [
+    google-cloud-sdk
+
     # Core Utilities
     git
     git-lfs
@@ -47,8 +49,6 @@
     # Applications
     obsidian
     firefox
-    google-chrome
-    vivaldi
     zotero
     inkscape
     gnuplot
@@ -75,6 +75,31 @@
     (haskellPackages.ghcWithPackages (ps: with ps; [
       monad-par mtl split stack lens ihaskell
     ]))
+
+    # --- Wrapped Web Browsers ---
+    (symlinkJoin {
+      name = "google-chrome-fixed";
+      paths = [ google-chrome ];
+      buildInputs = [ makeWrapper ];
+      postBuild = ''
+        wrapProgram $out/bin/google-chrome-stable \
+          --run 'unset DBUS_SESSION_BUS_ADDRESS'
+      '';
+    })
+
+    (symlinkJoin {
+      name = "vivaldi-fixed";
+      # Note: We apply your Vivaldi overrides right here!
+      paths = [ (vivaldi.override { proprietaryCodecs = true; enableWidevine = true; }) ];
+      buildInputs = [ makeWrapper ];
+      postBuild = ''
+        wrapProgram $out/bin/vivaldi \
+          --run 'unset DBUS_SESSION_BUS_ADDRESS'
+      '';
+    })
+    # ----------------------------
+
+
   ];
 
   # 5. File Management
@@ -93,6 +118,7 @@
       proxy_servers:
         http:  http://qv74thju04.proxy.cloudflare-gateway.com
         https: https://qv74thju04.proxy.cloudflare-gateway.com:443
+
     '';
   };
 
@@ -108,7 +134,6 @@
 
   # Browsers
   programs.firefox.enable = true;
-  programs.vivaldi.enable = true;
 
   # Tmux
   programs.tmux = {
@@ -131,4 +156,5 @@
     enable = true;
     package = pkgs.vscode-fhs;
   };
+
 }
