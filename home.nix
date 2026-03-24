@@ -1,5 +1,24 @@
 { config, pkgs, ... }:
+let
+  vivaldi-fixed = pkgs.symlinkJoin {
+    name = "vivaldi-fixed";
+    paths = [ (pkgs.vivaldi.override { proprietaryCodecs = true; enableWidevine = true; }) ];
+    buildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      # Wrap the binaries
+      wrapProgram $out/bin/vivaldi \
+        --run 'unset DBUS_SESSION_BUS_ADDRESS'
 
+      if [ -e $out/bin/vivaldi-stable ]; then
+        wrapProgram $out/bin/vivaldi-stable \
+          --run 'unset DBUS_SESSION_BUS_ADDRESS'
+      fi
+
+      # Strip out the original desktop files entirely so they never collide with Home Manager
+      rm -rf $out/share/applications
+    '';
+  };
+in
 {
   # 1. Modern Import: Let Home Manager handle module loading.
   # Ensure ./bash.nix, ./emacs.nix, and ./shell.nix define a top-level module
@@ -87,18 +106,7 @@
       '';
     })
 
-    (symlinkJoin {
-      name = "vivaldi-fixed";
-      # Note: We apply your Vivaldi overrides right here!
-      paths = [ (vivaldi.override { proprietaryCodecs = true; enableWidevine = true; }) ];
-      buildInputs = [ makeWrapper ];
-      postBuild = ''
-        wrapProgram $out/bin/vivaldi \
-          --run 'unset DBUS_SESSION_BUS_ADDRESS'
-      '';
-    })
-    # ----------------------------
-
+    vivaldi-fixed
 
   ];
 
@@ -151,6 +159,18 @@
       ${pkgs.desktop-file-utils}/bin/update-desktop-database $out/share/applications
     fi
   '';
+
+  # 2. The GUI Shortcut Override
+  xdg.desktopEntries.vivaldi-stable = {
+    name = "Vivaldi";
+    genericName = "Web Browser";
+    # By just saying "vivaldi", we force the GUI to use the wrapped binary from your PATH
+    exec = "${vivaldi-fixed}/bin/vivaldi %U";
+    icon = "vivaldi";
+    terminal = false;
+    categories = [ "Network" "WebBrowser" ];
+    mimeType = [ "text/html" "x-scheme-handler/http" "x-scheme-handler/https" ];
+  };
 
   programs.vscode = {
     enable = true;
