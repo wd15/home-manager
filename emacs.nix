@@ -109,4 +109,10 @@
       (global-set-key (kbd "C-c g m") 'gptel-menu)  ;; Open the menu to change models/settings
     '';
   };
+
+  services.emacs = {
+    enable = true;
+    client.enable = true;
+  };
+
 }

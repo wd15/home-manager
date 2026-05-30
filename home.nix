@@ -18,6 +18,37 @@ let
       rm -rf $out/share/applications
     '';
   };
+
+  google-chrome-fixed = pkgs.symlinkJoin {
+    name = "google-chrome-fixed";
+    paths = [ pkgs.google-chrome ];
+    buildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/google-chrome-stable --run 'unset DBUS_SESSION_BUS_ADDRESS'
+      rm -rf $out/share/applications
+    '';
+  };
+
+  obsidian-fixed = pkgs.symlinkJoin {
+    name = "obsidian-fixed";
+    paths = [ pkgs.obsidian ];
+    buildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/obsidian --run 'unset DBUS_SESSION_BUS_ADDRESS'
+      rm -rf $out/share/applications
+    '';
+  };
+
+  code-cursor-fixed = pkgs.symlinkJoin {
+    name = "code-cursor-fixed";
+    paths = [ pkgs.code-cursor ];
+    buildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/cursor --run 'unset DBUS_SESSION_BUS_ADDRESS'
+      rm -rf $out/share/applications
+    '';
+  };
+
 in
 {
   # 1. Modern Import: Let Home Manager handle module loading.
@@ -66,12 +97,14 @@ in
     # otherwise install 'ghc' directly here.
 
     # Applications
-    obsidian
+    vivaldi-fixed
+    google-chrome-fixed
+    obsidian-fixed
+    code-cursor-fixed
     firefox
     zotero
     inkscape
     gnuplot
-    code-cursor
 
     # Document Processing
     pandoc
@@ -95,19 +128,7 @@ in
       monad-par mtl split stack lens ihaskell
     ]))
 
-    # --- Wrapped Web Browsers ---
-    (symlinkJoin {
-      name = "google-chrome-fixed";
-      paths = [ google-chrome ];
-      buildInputs = [ makeWrapper ];
-      postBuild = ''
-        wrapProgram $out/bin/google-chrome-stable \
-          --run 'unset DBUS_SESSION_BUS_ADDRESS'
-      '';
-    })
-
-    vivaldi-fixed
-
+    github-cli
   ];
 
   # 5. File Management
@@ -161,15 +182,45 @@ in
   '';
 
   # 2. The GUI Shortcut Override
-  xdg.desktopEntries.vivaldi-stable = {
-    name = "Vivaldi";
-    genericName = "Web Browser";
-    # By just saying "vivaldi", we force the GUI to use the wrapped binary from your PATH
-    exec = "${vivaldi-fixed}/bin/vivaldi %U";
-    icon = "vivaldi";
-    terminal = false;
-    categories = [ "Network" "WebBrowser" ];
-    mimeType = [ "text/html" "x-scheme-handler/http" "x-scheme-handler/https" ];
+  xdg.desktopEntries = {
+    vivaldi-stable = {
+      name = "Vivaldi";
+      genericName = "Web Browser";
+      # By just saying "vivaldi", we force the GUI to use the wrapped binary from your PATH
+      exec = "${vivaldi-fixed}/bin/vivaldi %U";
+      icon = "vivaldi";
+      terminal = false;
+      categories = [ "Network" "WebBrowser" ];
+      mimeType = [ "text/html" "x-scheme-handler/http" "x-scheme-handler/https" ];
+    };
+
+    google-chrome = {
+      name = "Google Chrome";
+      genericName = "Web Browser";
+      exec = "${google-chrome-fixed}/bin/google-chrome-stable %U";
+      icon = "google-chrome";
+      terminal = false;
+      categories = [ "Network" "WebBrowser" ];
+    };
+
+    obsidian = {
+      name = "Obsidian";
+      genericName = "Knowledge Base";
+      exec = "${obsidian-fixed}/bin/obsidian %U";
+      icon = "obsidian";
+      terminal = false;
+      categories = [ "Office" ];
+    };
+
+    cursor = {
+      name = "Cursor";
+      genericName = "Text Editor";
+      exec = "${code-cursor-fixed}/bin/cursor %U";
+      icon = "cursor";
+      terminal = false;
+      categories = [ "Development" "TextEditor" ];
+    };
+
   };
 
   programs.vscode = {

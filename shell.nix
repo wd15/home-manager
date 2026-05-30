@@ -8,6 +8,10 @@ let
   '';
 
   vpn = pkgs.writeShellScriptBin "vpn" ''
+    echo "Restarting VPN agent..."
+    sudo systemctl restart vpnagentd
+    sleep 1
+
     xdg-settings set default-web-browser google-chrome.desktop
     /opt/cisco/secureclient/bin/vpnui
     xdg-settings set default-web-browser vivaldi-stable.desktop
@@ -28,7 +32,12 @@ let
   conda-activate = pkgs.writeShellScriptBin "conda-activate" ''
     eval "$(/home/wd15/miniforge3/bin/conda shell.bash hook)"
   '';
-
+  wake-dp = pkgs.writeShellScriptBin "wake-dp" ''
+    cat /sys/class/drm/card*-DP-1/status > /dev/null 2>&1
+    sudo udevadm trigger --subsystem-match=drm --action=change
+    sleep 1
+    xrandr --output DP-1 --auto
+  '';
 in
 {
   # This is the key change: we return a configuration set, not a raw list.
@@ -39,5 +48,6 @@ in
     jupyter-cricket
     bat
     conda-activate
+    wake-dp
   ];
 }

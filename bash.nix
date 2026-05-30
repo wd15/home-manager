@@ -21,6 +21,7 @@
        bstart = "sudo systemctl start bluetooth.service";
        thermocalc = "/opt/Thermo-Calc/2024b/Thermo-Calc.sh";
        cricket = "ssh cricket '~/ni'";
+       pbcopy="xclip -selection clipboard";
     };
 
     initExtra = ''
