@@ -100,9 +100,9 @@
       # Permanent Monitor Layout
       # Syntax: "name, resolution@refresh, position, scale"
       monitor = [
-        "DP-1, 2560x1440@60, 4480x0, 1"   # left
-        "eDP-1, 1920x1080@144, 0x0, 1"    # center
-        "HDMI-A-1, 2560x1440@60, 1920x0, 1"   # right
+        "DP-1, 2560x1440@60, 0x0, 1"   # left
+        "eDP-1, 1920x1080@144, 2560x0, 1"    # center
+        "HDMI-A-1, 2560x1440@60, 4480x0, 1"   # right
       ];
 
       exec-once = [
