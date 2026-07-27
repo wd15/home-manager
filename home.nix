@@ -176,6 +176,12 @@ in
     BROWSER = "vivaldi";
   };
 
+  programs.keychain = {
+    enable = true;
+    enableBashIntegration = true; # Hooks into your bash shell
+    keys = [ "id_ed25519" ];      # Tells it which key to load
+  };
+
   # 7. Program Configurations
   programs.home-manager.enable = true;
 
