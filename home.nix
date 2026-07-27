@@ -58,6 +58,8 @@ in
     ./bash.nix
     ./emacs.nix
     ./shell.nix
+    # ./sway.nix
+    ./hyprland.nix
   ];
 
   # 2. Allow Unfree: Redundant if set in flake.nix, but good safety here.
@@ -70,6 +72,19 @@ in
   # 3. Targets: Essential for non-NixOS systems (handles XDG paths, etc.)
   targets.genericLinux.enable = true;
   xdg.mime.enable = true;
+
+  # ADD THIS BLOCK: Map web protocols to your xdg.desktopEntries.vivaldi-stable entry
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications = {
+      "text/html" = "vivaldi-stable.desktop";
+      "x-scheme-handler/http" = "vivaldi-stable.desktop";
+      "x-scheme-handler/https" = "vivaldi-stable.desktop";
+      "x-scheme-handler/about" = "vivaldi-stable.desktop";
+      "x-scheme-handler/unknown" = "vivaldi-stable.desktop";
+      "application/xhtml+xml" = "vivaldi-stable.desktop";
+    };
+  };
 
   # 4. Package Definitions (Cleaned up)
   home.packages = with pkgs; [
@@ -129,6 +144,8 @@ in
     ]))
 
     github-cli
+
+    hyprpaper
   ];
 
   # 5. File Management
@@ -156,6 +173,7 @@ in
     EDITOR = "emacs -nw";
     # Fix for micromamba shell initialization
     MAMBA_EXE = "${pkgs.micromamba}/bin/micromamba";
+    BROWSER = "vivaldi";
   };
 
   # 7. Program Configurations
@@ -165,12 +183,22 @@ in
   programs.firefox.enable = true;
 
   # Tmux
+  # programs.tmux = {
+  #   enable = true;
+  #   mouse = true;
+  #   extraConfig = ''
+  #     # Copy tmux buffer to X clipboard
+  #     bind C-w run -b "tmux show-buffer | ${pkgs.xclip}/bin/xclip -i"
+  #   '';
+  # };
+
+# Tmux
   programs.tmux = {
     enable = true;
     mouse = true;
     extraConfig = ''
-      # Copy tmux buffer to X clipboard
-      bind C-w run -b "tmux show-buffer | ${pkgs.xclip}/bin/xclip -i"
+      # Copy tmux buffer to Wayland clipboard
+      bind C-w run -b "tmux show-buffer | ${pkgs.wl-clipboard}/bin/wl-copy"
     '';
   };
 
@@ -227,5 +255,6 @@ in
     enable = true;
     package = pkgs.vscode-fhs;
   };
+
 
 }
