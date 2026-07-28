@@ -15,13 +15,13 @@
        mkdir = "mkdir -p";
        edit = "emacs -nw";
        # make sure xscreesaver is installed and screensaver runs on startup
-       lock = "xscreensaver-command --lock";
+       lock = "/usr/local/bin/hyprlock";
        firedef = "xdg-settings set default-web-browser firefox.desktop";
        vivdef = "xdg-settings set default-web-browser vivaldi-stable.desktop";
        bstart = "sudo systemctl start bluetooth.service";
        thermocalc = "/opt/Thermo-Calc/2024b/Thermo-Calc.sh";
        cricket = "ssh cricket '~/ni'";
-       pbcopy="xclip -selection clipboard";
+       pbcopy="wl-copy";
     };
 
     initExtra = ''

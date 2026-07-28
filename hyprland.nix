@@ -7,7 +7,25 @@
     wofi       # App launcher
     pkgs.brightnessctl
     pkgs.mako
+    pkgs.nwg-displays
+    pavucontrol
+    networkmanagerapplet
+    blueman
+    hyprland-autoname-workspaces   # <- new
   ];
+
+  systemd.user.services.hyprland-autoname-workspaces = {
+    Unit = {
+      Description = "Rename Hyprland workspaces after running apps";
+      After = [ "graphical-session.target" ];
+      PartOf = [ "graphical-session.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.hyprland-autoname-workspaces}/bin/hyprland-autoname-workspaces";
+      Restart = "on-failure";
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
 
   # --- SCREEN LOCKER ---
   programs.hyprlock = {
@@ -43,6 +61,8 @@
   programs.waybar = {
     enable = true;
 
+    systemd.enable = true;
+
     settings = {
       mainBar = {
         layer = "top";
@@ -52,13 +72,30 @@
         # Choose which modules go where
         modules-left = [ "hyprland/workspaces" ];
         modules-center = [ "hyprland/window" ];
-        modules-right = [ "pulseaudio" "battery" "clock" "tray" ];
+        modules-right = [ "network" "pulseaudio" "battery" "clock" "tray" ];
 
         # Configure the clock format
         clock = {
           format = "{:%I:%M %p  %A, %b %d}";
           tooltip-format = "<tt><small>{calendar}</small></tt>";
         };
+
+        pulseaudio = {
+          format = "{volume}%";
+          format-muted = "muted";
+          on-click = "pavucontrol";
+          on-click-right = "pactl set-sink-mute @DEFAULT_SINK@ toggle";
+          scroll-step = 5;
+        };
+
+        network = {
+          format-wifi = "{essid} ({signalStrength}%)";
+          format-ethernet = "{ifname}";
+          format-disconnected = "disconnected";
+          tooltip-format = "{ifname}: {ipaddr}/{cidr}";
+          on-click = "kitty -e nmtui";
+        };
+
       };
     };
   };
@@ -95,6 +132,9 @@
   wayland.windowManager.hyprland = {
     enable = true;
 
+    extraConfig = ''
+      source = ~/.config/hypr/monitors.conf
+    '';
 
     settings = {
       # Permanent Monitor Layout
@@ -106,10 +146,12 @@
       ];
 
       exec-once = [
-        "waybar"
         "mako"
         "hyprpaper"
+        "nm-applet --indicator"
+        "blueman-applet"
       ];
+
       # 1. Set your modifier key to the Windows/Super key
       "$mod" = "SUPER";
 
@@ -170,6 +212,7 @@
         "$mod, 7, workspace, 7"
         "$mod, 8, workspace, 8"
         "$mod, 9, workspace, 9"
+        "$mod, grave, workspace, empty"
 
         # Move active window to workspace 1-9
         "$mod SHIFT, 1, movetoworkspace, 1"
@@ -182,16 +225,22 @@
         "$mod SHIFT, 8, movetoworkspace, 8"
         "$mod SHIFT, 9, movetoworkspace, 9"
 
+        # Move active to next emtpy
+        "$mod SHIFT, grave, movetoworkspace, empty"
+
         # lockscreen
         "$mod, escape, exec, /usr/local/bin/hyprlock"
+
+        # open nwg-displays
+        "$mod, M, exec, nwg-displays"
 
       ];
 
 
       # 3. Mandatory Nvidia Environment Variables
       env = [
+        "XDG_CURRENT_DESKTOP,Hyprland"
         "LIBVA_DRIVER_NAME,nvidia"
-        "XDG_SESSION_TYPE,wayland"
         "GBM_BACKEND,nvidia-drm"
         "__GLX_VENDOR_LIBRARY_NAME,nvidia"
       ];

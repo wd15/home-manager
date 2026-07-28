@@ -43,6 +43,9 @@
     extraConfig = ''
       # Copy tmux buffer to Wayland clipboard
       bind C-w run -b "tmux show-buffer | ${pkgs.wl-clipboard}/bin/wl-copy"
+
+      # Force tmux to grab fresh Wayland variables every time you attach
+      set-option -g update-environment "DISPLAY WAYLAND_DISPLAY HYPRLAND_INSTANCE_SIGNATURE XDG_SESSION_TYPE SSH_AUTH_SOCK"
     '';
   };
 
