@@ -63,6 +63,13 @@
 
     systemd.enable = true;
 
+    style = ''
+      #workspaces button.active {
+        color: #89b4fa;
+        font-weight: bold;
+      }
+    '';
+
     settings = {
       mainBar = {
         layer = "top";

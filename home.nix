@@ -14,6 +14,7 @@
     ./browsers.nix
     ./packages.nix
     ./git-ssh.nix
+    ./workspace-icons.nix
   ];
 
   # NOTE: if flake.nix already sets nixpkgs.config.allowUnfree = true globally,
