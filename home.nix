@@ -54,4 +54,10 @@
     enable = true;
     package = pkgs.vscode-fhs;
   };
+
+  services.emacs = {
+    enable = true;
+    client.enable = true;
+  };
+
 }

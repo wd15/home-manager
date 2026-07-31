@@ -26,6 +26,9 @@
     # genie:/vol0/home/wd15, network-mounted, 98% full) and onto local
     # block storage instead.
     XDG_CACHE_HOME = "/toolbox/wd15/.cache";
+
+    # Force Nix to use the real filesystem state dir instead of the namespace tmpfs
+    NIX_STATE_DIR = "/toolbox/wd15/opt/nix/var/nix";5~
   };
 
   programs.home-manager.enable = true;
@@ -46,3 +49,4 @@
   # here would be inert. (On the laptop, by contrast, Home Manager's own
   # Nix settings ARE meaningful, since it's a standard install.)
 }
+j
