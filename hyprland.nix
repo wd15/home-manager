@@ -12,6 +12,7 @@
     networkmanagerapplet
     blueman
     hyprland-autoname-workspaces   # <- new
+    font-awesome
   ];
 
   systemd.user.services.hyprland-autoname-workspaces = {
@@ -64,9 +65,40 @@
     systemd.enable = true;
 
     style = ''
+      * {
+        font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", sans-serif;
+        font-size: 14px;
+      }
+
+      window#waybar {
+        background-color: rgba(30, 30, 46, 0.9); /* Dark background for the main bar */
+        color: #cdd6f4;
+      }
+
       #workspaces button.active {
         color: #89b4fa;
         font-weight: bold;
+      }
+
+      /* Shape the modules into rounded blocks */
+      .modules-right > widget > label,
+      .modules-right > widget > box {
+        padding: 0 12px;
+        margin: 4px 4px;            /* Adds space above, below, and between blocks */
+        border-radius: 12px;        /* Rounds the corners */
+        color: #1e1e2e;             /* Dark text to contrast with the bright backgrounds! */
+        font-weight: bold;
+      }
+
+      /* Apply background colors instead of text colors */
+      #network { background-color: #f38ba8; }
+      #pulseaudio { background-color: #f9e2af; }
+      #battery { background-color: #a6e3a1; }
+      #clock { background-color: #89b4fa; }
+
+      /* The tray looks best with a subtle dark gray block */
+      #tray {
+        background-color: #45475a;
       }
     '';
 
@@ -139,17 +171,31 @@
   wayland.windowManager.hyprland = {
     enable = true;
 
-    extraConfig = ''
-      source = ~/.config/hypr/monitors.conf
-    '';
-
     settings = {
       # Permanent Monitor Layout
       # Syntax: "name, resolution@refresh, position, scale"
+
+      # Permanent Monitor Layout
+      # Syntax: "desc:HardwareName, resolution@refresh, position, scale"
       monitor = [
-        "DP-1, 2560x1440@60, 0x0, 1"   # left
-        "eDP-1, 1920x1080@144, 2560x0, 1"    # center
-        "HDMI-A-1, 2560x1440@60, 4480x0, 1"   # right
+        # --- WORK SETUP ---
+        # Left (DP-1) - Locked to 60Hz for stability
+        "desc:ASUSTek COMPUTER INC ASUS VG32VQ1B 0x0000F8B4, 2560x1440@60, 0x0, 1"
+
+        # Center (eDP-1) - Laptop screen
+        "desc:BOE 0x0A15, 1920x1080@144, 2560x0, 1"
+
+        # Right (HDMI-A-1)
+        "desc:ASUSTek COMPUTER INC VG32VQ1B RCLMTF029491, 2560x1440@60, 4480x0, 1"
+
+        # --- HOME SETUP ---
+        # (Run 'hyprctl monitors' when you get home and replace these placeholders)
+        # "desc:HOME_MONITOR_LEFT_NAME, 1920x1080@60, 0x0, 1"
+        # "desc:HOME_MONITOR_RIGHT_NAME, 1920x1080@60, 4480x0, 1"
+
+        # --- TRAVEL SAFETY NET ---
+        # Catch-all for projectors. Locked to 1080p @ 60Hz so it NEVER chokes!
+        ", preferred, auto, 1"
       ];
 
       exec-once = [
@@ -238,8 +284,12 @@
         # lockscreen
         "$mod, escape, exec, /usr/local/bin/hyprlock"
 
-        # open nwg-displays
-        "$mod, M, exec, nwg-displays"
+        # --- PROJECTOR CONTROLS ---
+        # Super + P: Mirror laptop to projector safely
+        "$mod, P, exec, hyprctl keyword monitor \", 1920x1080@60, auto, 1, mirror, eDP-1\""
+
+        # Super + Shift + P: Revert to extended side-by-side mode safely
+        "$mod SHIFT, P, exec, hyprctl keyword monitor \", 1920x1080@60, auto, 1\""
 
       ];
 

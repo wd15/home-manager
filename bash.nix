@@ -22,6 +22,9 @@
        thermocalc = "/opt/Thermo-Calc/2024b/Thermo-Calc.sh";
        cricket = "ssh cricket '~/ni'";
        pbcopy="wl-copy";
+       # Projector toggles
+       mirror = "hyprctl keyword monitor \", preferred, auto, 1, mirror, eDP-1\"";
+       extend = "hyprctl keyword monitor \", preferred, auto, 1\"";
     };
 
     initExtra = ''

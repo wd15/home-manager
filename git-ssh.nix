@@ -1,31 +1,11 @@
 # ============================================================
-# git-ssh.nix
-# Git/SSH identity: dotfiles + keychain (SSH key agent).
+# git-ssh.nix  (laptop -- now just a passthrough)
+# Nothing laptop-specific remains once .mambarc moved to shared;
+# kept as its own file only so home.nix's existing imports list
+# doesn't need editing.
 # ============================================================
 { ... }:
 
 {
-  home.file = {
-    ".config/git/config".source = ./dotfiles/gitconfig;
-    ".commit-template.txt".source = ./dotfiles/commit-template.txt;
-    ".gitignore".source = ./dotfiles/gitignore;
-    ".git-completion.bash".source = ./dotfiles/git-completion.bash;
-    ".ssh/config".source = ./dotfiles/ssh-config;
-    ".signature.txt".source = ./dotfiles/signature.txt;
-
-    ".mambarc".text = ''
-      channels:
-        - conda-forge
-      always_yes: true
-      proxy_servers:
-        http:  http://qv74thju04.proxy.cloudflare-gateway.com
-        https: https://qv74thju04.proxy.cloudflare-gateway.com:443
-    '';
-  };
-
-  programs.keychain = {
-    enable = true;
-    enableBashIntegration = true;
-    keys = [ "id_ed25519" ];
-  };
+  imports = [ ./git-ssh-common.nix ];
 }

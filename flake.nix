@@ -1,5 +1,8 @@
+#============================================================
+# flake.nix
+# ============================================================
 {
-  description = "Home Manager configuration of wd15";
+  description = "Home Manager configuration of wd15: laptop (pippi) + HPC cluster (mr-french)";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
@@ -12,20 +15,25 @@
   outputs = { nixpkgs, home-manager, ... }:
     let
       system = "x86_64-linux";
-    in {
-      homeConfigurations."wd15" = home-manager.lib.homeManagerConfiguration {
-        # 1. We pass the raw nixpkgs input so Home Manager can instantiate it
-        pkgs = nixpkgs.legacyPackages.${system};
+      pkgs = nixpkgs.legacyPackages.${system};
 
-        # 2. We pass configuration modules
-        modules = [
-          ./home.nix
+      unfreeModule = {
+        nixpkgs.config.allowUnfree = true;
+      };
+    in
+    {
+      homeConfigurations = {
+        # home-manager switch --flake .#wd15   (laptop, pippi -- unchanged)
+        wd15 = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = [ ./home.nix unfreeModule ];
+        };
 
-          # 3. We configure nixpkgs here instead of in the 'let' block
-          {
-            nixpkgs.config.allowUnfree = true;
-          }
-        ];
+        # home-manager switch --flake .#cluster   (mr-french)
+        cluster = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = [ ./home-cluster.nix unfreeModule ];
+        };
       };
     };
 }
