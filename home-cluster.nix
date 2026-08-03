@@ -57,21 +57,32 @@
     # No Wayland clipboard binding -- no compositor on a compute node.
   };
 
-  # De-symlink .bashrc/.profile/.bash_profile after Home Manager links them.
+
+# De-symlink .bashrc/.profile/.bash_profile after Home Manager links them.
   # This resolves the namespace issue where SSH logins can't read the /nix store symlinks.
+  # We also use sed to rewrite the hardcoded /nix/ paths inside the files to the physical paths.
   home.activation.desymlinkLoginFiles = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    # Resolve the current profile target (which points to virtual /nix/store/...)
+    PROFILE_TARGET=$(readlink -f "$HOME/.nix-profile")
+    # Compute the physical path on the cluster
+    PHYSICAL_PROFILE="/toolbox/wd15/opt/nix''${PROFILE_TARGET#/nix}"
+
     for f in "$HOME/.bashrc" "$HOME/.profile" "$HOME/.bash_profile"; do
       if [ -L "$f" ]; then
         real_target=$(readlink -f "$f")
         if [ -f "$real_target" ]; then
           tmp="$f.desymlink.tmp"
           cp "$real_target" "$tmp"
+
+          # Patch the hardcoded paths so standard SSH bash can source them
+          sed -i 's|/nix/store|/toolbox/wd15/opt/nix/store|g' "$tmp"
+          sed -i "s|$HOME/.nix-profile|$PHYSICAL_PROFILE|g" "$tmp"
+
           mv -f "$tmp" "$f"
-          $VERBOSE_ECHO "De-symlinked $f (was -> $real_target)"
+          $VERBOSE_ECHO "De-symlinked and patched $f"
         else
           echo "WARNING: $f is a symlink but target '$real_target' doesn't exist or isn't readable -- leaving as-is" >&2
         fi
       fi
     done
   '';
-}
