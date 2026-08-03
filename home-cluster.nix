@@ -18,19 +18,19 @@
 
   targets.genericLinux.enable = true;
 
+
   home.sessionVariables = {
     EDITOR = "emacs -nw";
     MAMBA_EXE = "${pkgs.micromamba}/bin/micromamba";
-
-    # Keep Nix's cache off NFS-backed $HOME (confirmed: /users/wd15 is
-    # genie:/vol0/home/wd15, network-mounted, 98% full) and onto local
-    # block storage instead.
     XDG_CACHE_HOME = "/toolbox/wd15/.cache";
-
-    # Force Nix to use the real filesystem state dir instead of the namespace tmpfs
-    NIX_STATE_DIR = "/toolbox/wd15/opt/nix/var/nix";5~
+    NIX_STATE_DIR = "/toolbox/wd15/user_nix/nix/var/nix";
+    NIX_PROFILE = "/toolbox/wd15/user_nix/nix/var/nix/profiles/per-user/wd15/profile";
   };
 
+  home.sessionPath = [
+    "/toolbox/wd15/user_nix/bin"
+  ];
+  
   programs.home-manager.enable = true;
 
   programs.tmux = {
@@ -49,4 +49,3 @@
   # here would be inert. (On the laptop, by contrast, Home Manager's own
   # Nix settings ARE meaningful, since it's a standard install.)
 }
-j
