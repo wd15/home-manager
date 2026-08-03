@@ -200,7 +200,7 @@
 
       exec-once = [
         "mako"
-        "hyprpaper"
+        "sleep 2 && hyprpaper"
         "nm-applet --indicator"
         "blueman-applet"
       ];

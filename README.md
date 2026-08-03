@@ -13,6 +13,16 @@ home-manager switch --flake .#wd15
 home-manager switch --flake .#cluster
 ```
 
+**First time on a machine, or if `home-manager` isn't on `PATH` yet:** don't use `nix-env -i home-manager` (that's the old, pre-flakes way). Since `home-manager` is already a flake input here, just run it directly without a separate install step:
+
+```bash
+nix run home-manager/release-25.11 -- switch --flake .#cluster
+```
+
+(swap `.#cluster` for `.#wd15` on the laptop). This fetches and runs Home Manager on the fly, matching the version pinned in `flake.nix`. After it succeeds once, a `home-manager` binary should be on `PATH` via the new profile generation — check with `which home-manager`, and use the plain `home-manager switch --flake ...` form after that.
+
+On the cluster specifically, expect the **first** invocation to take ~60s (cold nixpkgs eval, not a hang — see "Machine-specific facts" below). Let it run.
+
 Always run from inside this repo directory. Commit before switching — flakes warn loudly ("Git tree is dirty") on uncommitted changes; it's not fatal but it's a signal you forgot to commit.
 
 ---
@@ -94,6 +104,15 @@ Deliberate choice, not an oversight:
 
 6. **Home Manager backup collisions**: if `home-manager switch` complains a file "would be clobbered," check whether a stale `.backup` file already exists before re-running with `-b backup` — it'll refuse to overwrite its own old backup too. `diff` the conflicting files first; they're often harmless GUI-generated cruft, not anything worth preserving.
 
+7. **Cluster: `filesystem error: cannot create hard link: File exists` during `switch`/`nix run`.** Caused by `auto-optimise-store = true` in `~/.config/nix/nix.conf` — Nix hard-links duplicate file content into `.links/` in real time, and on this store setup that races with concurrent build/link operations and fails intermittently. Recurring, not fatal — usually just retrying the same command succeeds:
+   ```bash
+   nix run home-manager/release-25.11 -- switch --flake .#cluster
+   ```
+   Proper fix: set `auto-optimise-store = false` in `~/.config/nix/nix.conf` (remember — this is a file Home Manager doesn't manage, see the Nix-install notes above), and instead run deduplication manually/periodically as its own step so it can't race with anything:
+   ```bash
+   nix store optimise
+   ```
+
 ---
 
 ## Open items / not yet resolved
@@ -112,3 +131,4 @@ Deliberate choice, not an oversight:
 3. If a file conflict error appears ("would be clobbered"), diff it first, then `-b backup` if safe, or add `force = true` to that specific option if it's a recurring fight with some other app (see gotcha #5 for the pattern).
 4. For Hyprland-specific changes involving `exec-once`, remember gotcha #2 — you need a real restart, not just a switch.
 5. Commit once confirmed working — don't leave the tree dirty for long, flakes nag about it constantly and it's easy to lose track of what's actually applied vs. staged.
+
