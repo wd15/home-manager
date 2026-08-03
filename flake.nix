@@ -1,5 +1,6 @@
 #============================================================
-# flake.nix
+# flake.nix  (full file -- passes isCluster via extraSpecialArgs
+# so bash.nix can branch on it)
 # ============================================================
 {
   description = "Home Manager configuration of wd15: laptop (pippi) + HPC cluster (mr-french)";
@@ -23,15 +24,17 @@
     in
     {
       homeConfigurations = {
-        # home-manager switch --flake .#wd15   (laptop, pippi -- unchanged)
+        # home-manager switch --flake .#wd15   (laptop, pippi)
         wd15 = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
+          extraSpecialArgs = { isCluster = false; };
           modules = [ ./home.nix unfreeModule ];
         };
 
         # home-manager switch --flake .#cluster   (mr-french)
         cluster = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
+          extraSpecialArgs = { isCluster = true; };
           modules = [ ./home-cluster.nix unfreeModule ];
         };
       };
