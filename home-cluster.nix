@@ -57,6 +57,7 @@
     # No Wayland clipboard binding -- no compositor on a compute node.
   };
 
+
   # De-symlink .bashrc/.profile/.bash_profile and inject a namespace bootstrap.
   # If /nix doesn't exist, we immediately re-exec into the Nix namespace bubble.
   home.activation.desymlinkLoginFiles = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
@@ -72,7 +73,7 @@
 if [ ! -d "/nix" ]; then
   # We are outside the namespace bubble. Inject Nix into path and re-exec inside it.
   export PATH="/toolbox/wd15/opt/bin:$PATH"
-  exec /toolbox/wd15/opt/bin/nix shell nixpkgs#bash -c 'exec bash -l'
+  exec /toolbox/wd15/opt/bin/nix shell nixpkgs#bash -c bash -l
 fi
 # --- END BOOTSTRAP ---
 EOF
@@ -88,5 +89,6 @@ EOF
       fi
     done
   '';
+
 
 }
