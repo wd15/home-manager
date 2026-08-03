@@ -57,29 +57,31 @@
     # No Wayland clipboard binding -- no compositor on a compute node.
   };
 
-
-# De-symlink .bashrc/.profile/.bash_profile after Home Manager links them.
-  # This resolves the namespace issue where SSH logins can't read the /nix store symlinks.
-  # We also use sed to rewrite the hardcoded /nix/ paths inside the files to the physical paths.
+  # De-symlink .bashrc/.profile/.bash_profile and inject a namespace bootstrap.
+  # If /nix doesn't exist, we immediately re-exec into the Nix namespace bubble.
   home.activation.desymlinkLoginFiles = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-    # Resolve the current profile target (which points to virtual /nix/store/...)
-    PROFILE_TARGET=$(readlink -f "$HOME/.nix-profile")
-    # Compute the physical path on the cluster
-    PHYSICAL_PROFILE="/toolbox/wd15/opt/nix''${PROFILE_TARGET#/nix}"
-
     for f in "$HOME/.bashrc" "$HOME/.profile" "$HOME/.bash_profile"; do
       if [ -L "$f" ]; then
         real_target=$(readlink -f "$f")
         if [ -f "$real_target" ]; then
           tmp="$f.desymlink.tmp"
-          cp "$real_target" "$tmp"
 
-          # Patch the hardcoded paths so standard SSH bash can source them
-          sed -i 's|/nix/store|/toolbox/wd15/opt/nix/store|g' "$tmp"
-          sed -i "s|$HOME/.nix-profile|$PHYSICAL_PROFILE|g" "$tmp"
+          # 1. Inject the namespace bootstrap code at the very top
+          cat << 'EOF' > "$tmp"
+# --- AUTO-NAMESPACE BOOTSTRAP ---
+if [ ! -d "/nix" ]; then
+  # We are outside the namespace bubble. Inject Nix into path and re-exec inside it.
+  export PATH="/toolbox/wd15/opt/bin:$PATH"
+  exec /toolbox/wd15/opt/bin/nix shell nixpkgs#bash -c 'exec bash -l'
+fi
+# --- END BOOTSTRAP ---
+EOF
+
+          # 2. Append the pristine, native Home Manager script
+          cat "$real_target" >> "$tmp"
 
           mv -f "$tmp" "$f"
-          $VERBOSE_ECHO "De-symlinked and patched $f"
+          $VERBOSE_ECHO "De-symlinked and injected namespace bootstrap into $f"
         else
           echo "WARNING: $f is a symlink but target '$real_target' doesn't exist or isn't readable -- leaving as-is" >&2
         fi
