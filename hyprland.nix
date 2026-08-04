@@ -189,9 +189,12 @@
         "desc:ASUSTek COMPUTER INC VG32VQ1B RCLMTF029491, 2560x1440@60, 4480x0, 1"
 
         # --- HOME SETUP ---
-        # (Run 'hyprctl monitors' when you get home and replace these placeholders)
-        # "desc:HOME_MONITOR_LEFT_NAME, 1920x1080@60, 0x0, 1"
-        # "desc:HOME_MONITOR_RIGHT_NAME, 1920x1080@60, 4480x0, 1"
+        # Left (DP-1) - Samsung 32"
+        "desc:Samsung Electric Company C32H71x HTPJ500129, 2560x1440@60, 4480x0, 1"
+
+        # Right (HDMI-A-1) - ASUS 32"
+        # (Explicitly forcing 1440p@60Hz to override the 1080p HDMI EDID bug)
+        "desc:ASUSTek COMPUTER INC ASUS VG32VQ1B 0x0004F2A8, 2560x1440@60, 0x0, 1"
 
         # --- TRAVEL SAFETY NET ---
         # Catch-all for projectors. Locked to 1080p @ 60Hz so it NEVER chokes!
