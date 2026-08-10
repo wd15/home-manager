@@ -3,7 +3,7 @@
 # Core glue only: identity, imports, session vars, small
 # program toggles that don't warrant their own file.
 # ============================================================
-{ config, pkgs, ... }:
+{ config, pkgs, lib,  ... }:
 
 {
   imports = [
@@ -60,4 +60,15 @@
     client.enable = true;
   };
 
+  age.identityPaths = [ "${config.home.homeDirectory}/.ssh/agenix" ];
+  age.secrets.opencommit-api-key.file = ./secrets/opencommit-api-key.age;
+
+  home.activation.opencommitConfig = lib.hm.dag.entryAfter ["agenixInstall"] ''
+    cat > ${config.home.homeDirectory}/.opencommit <<EOF
+    OCO_AI_PROVIDER=gemini
+    OCO_MODEL=gemini-3.5-flash-lite
+    OCO_API_KEY=$(cat ${config.age.secrets.opencommit-api-key.path})
+    EOF
+    chmod 600 ${config.home.homeDirectory}/.opencommit
+  '';
 }
