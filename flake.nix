@@ -11,9 +11,13 @@
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { nixpkgs, home-manager, ... }:
+  outputs = { nixpkgs, home-manager, agenix, ... }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -28,14 +32,14 @@
         wd15 = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           extraSpecialArgs = { isCluster = false; };
-          modules = [ ./home.nix unfreeModule ];
+          modules = [ ./home.nix unfreeModule agenix.homeManagerModules.default ];
         };
 
         # home-manager switch --flake .#cluster   (mr-french)
         cluster = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           extraSpecialArgs = { isCluster = true; };
-          modules = [ ./home-cluster.nix unfreeModule ];
+          modules = [ ./home-cluster.nix unfreeModule agenix.homeManagerModules.default ];
         };
       };
     };

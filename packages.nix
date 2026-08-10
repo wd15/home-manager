@@ -34,6 +34,7 @@
     inkscape
     gnuplot
     hyprpaper
+    grimblast
 
     # Document Processing
     pandoc
@@ -56,5 +57,8 @@
     (haskellPackages.ghcWithPackages (ps: with ps; [
       monad-par mtl split stack lens ihaskell
     ]))
+
+    # Other
+    opencommit
   ];
 }

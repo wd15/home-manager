@@ -6,13 +6,14 @@
     kitty      # Fast, GPU-accelerated terminal
     wofi       # App launcher
     pkgs.brightnessctl
-    pkgs.mako
     pkgs.nwg-displays
     pavucontrol
     networkmanagerapplet
     blueman
     hyprland-autoname-workspaces   # <- new
     font-awesome
+    xdg-utils         # Lets apps open web links
+    polkit_gnome      # The password prompt GUI
   ];
 
   systemd.user.services.hyprland-autoname-workspaces = {
@@ -148,23 +149,25 @@
     sort=-time
   '';
 
-  ##### # --- NOTIFICATIONS ---
-  ##### services.mako = {
-  #####   enable = true;
-  #####   settings = {
-  #####     default-timeout = 5000;
-  #####     max-visible = 5;
-  #####     sort="-time";
-  #####   };
-  ##### };
+  # --- NOTIFICATIONS ---
+  services.mako = {
+    enable = true;
+    settings = {
+      "default-timeout" = 5000;
+      "max-visible" = 5;
+      sort = "-time";
+      # If there is an action, do it. Otherwise, dismiss!
+      "on-button-left" = "invoke-default-action,dismiss";
+    };
+  };
 
   # --- WALLPAPER ENGINE ---
   services.hyprpaper = {
     enable = true;
     settings = {
       # We will set a temporary dummy path. You will change this to a real image later!
-      preload = [ "~/.config/wallpaper.jpg" ];
-      wallpaper = [ ",~/.config/wallpaper.jpg" ];
+      preload = [ "/home/wd15/.config/wallpaper.jpg" ];
+      wallpaper = [ ",/home/wd15/.config/wallpaper.jpg" ];
     };
   };
 
@@ -203,7 +206,7 @@
 
       exec-once = [
         "mako"
-        "sleep 2 && hyprpaper"
+        "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
         "nm-applet --indicator"
         "blueman-applet"
       ];
@@ -230,6 +233,9 @@
         "$mod, D, exec, wofi --show drun"
         "$mod, Q, killactive,"
         "$mod SHIFT, E, exit,"
+
+        # Super + Shift + W: Reload Waybar and Hyprpaper across all monitors
+        "$mod SHIFT, W, exec, systemctl --user restart waybar && systemctl --user restart hyprpaper"
 
         # --- OPTION 1: BULLETPROOF VIM KEYS (Highly Recommended) ---
         # Super + H/J/K/L to move focus
