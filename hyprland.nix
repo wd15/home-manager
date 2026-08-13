@@ -4,6 +4,7 @@
   imports = [
     ./waybar.nix
     ./wofi.nix
+    ./gtk.nix
   ];
 
   # Install our essential desktop tools
@@ -225,6 +226,9 @@
         "LIBVA_DRIVER_NAME,nvidia"
         "GBM_BACKEND,nvidia-drm"
         "__GLX_VENDOR_LIBRARY_NAME,nvidia"
+        "XCURSOR_THEME,Bibata-Modern-Ice"
+        "XCURSOR_SIZE,24"
+        "GTK_THEME,adw-gtk3-dark"
       ];
 
       # 4. Fix the invisible Nvidia cursor bug
