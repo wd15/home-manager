@@ -1,6 +1,10 @@
 { config, pkgs, ... }:
 
 {
+  imports = [
+    ./waybar.nix
+  ];
+
   # Install our essential desktop tools
   home.packages = with pkgs; [
     kitty      # Fast, GPU-accelerated terminal
@@ -57,86 +61,6 @@
           placeholder_text = "<i>Input Password...</i>";
         }
       ];
-    };
-  };
-
-  programs.waybar = {
-    enable = true;
-
-    systemd.enable = true;
-
-    style = ''
-      * {
-        font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", sans-serif;
-        font-size: 14px;
-      }
-
-      window#waybar {
-        background-color: rgba(30, 30, 46, 0.9); /* Dark background for the main bar */
-        color: #cdd6f4;
-      }
-
-      #workspaces button.active {
-        color: #89b4fa;
-        font-weight: bold;
-      }
-
-      /* Shape the modules into rounded blocks */
-      .modules-right > widget > label,
-      .modules-right > widget > box {
-        padding: 0 12px;
-        margin: 4px 4px;            /* Adds space above, below, and between blocks */
-        border-radius: 12px;        /* Rounds the corners */
-        color: #1e1e2e;             /* Dark text to contrast with the bright backgrounds! */
-        font-weight: bold;
-      }
-
-      /* Apply background colors instead of text colors */
-      #network { background-color: #f38ba8; }
-      #pulseaudio { background-color: #f9e2af; }
-      #battery { background-color: #a6e3a1; }
-      #clock { background-color: #89b4fa; }
-
-      /* The tray looks best with a subtle dark gray block */
-      #tray {
-        background-color: #45475a;
-      }
-    '';
-
-    settings = {
-      mainBar = {
-        layer = "top";
-        position = "top";
-        height = 30;
-
-        # Choose which modules go where
-        modules-left = [ "hyprland/workspaces" ];
-        modules-center = [ "hyprland/window" ];
-        modules-right = [ "network" "pulseaudio" "battery" "clock" "tray" ];
-
-        # Configure the clock format
-        clock = {
-          format = "{:%I:%M %p  %A, %b %d}";
-          tooltip-format = "<tt><small>{calendar}</small></tt>";
-        };
-
-        pulseaudio = {
-          format = "{volume}%";
-          format-muted = "muted";
-          on-click = "pavucontrol";
-          on-click-right = "pactl set-sink-mute @DEFAULT_SINK@ toggle";
-          scroll-step = 5;
-        };
-
-        network = {
-          format-wifi = "{essid} ({signalStrength}%)";
-          format-ethernet = "{ifname}";
-          format-disconnected = "disconnected";
-          tooltip-format = "{ifname}: {ipaddr}/{cidr}";
-          on-click = "kitty -e nmtui";
-        };
-
-      };
     };
   };
 
