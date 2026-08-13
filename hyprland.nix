@@ -300,6 +300,12 @@
         # Super + Shift + P: Revert to extended side-by-side mode safely
         "$mod SHIFT, P, exec, hyprctl keyword monitor \", 1920x1080@60, auto, 1\""
 
+        # --- SCREENSHOTS ---
+        # Super + Shift + S: Select area to copy and save
+        "$mod SHIFT, S, exec, grimblast copysave area"
+
+        # Print Screen key: Select area to copy and save
+        ", Print, exec, grimblast copysave area"
       ];
 
 
