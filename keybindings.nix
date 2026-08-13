@@ -74,7 +74,7 @@
       "$mod SHIFT, grave, movetoworkspace, empty"
 
       # Lock Screen
-      "$mod, escape, exec, hyprlock"
+      "$mod, escape, exec, /usr/local/bin/hyprlock"
 
       # Projector Controls
       "$mod, P, exec, hyprctl keyword monitor \", 1920x1080@60, auto, 1, mirror, eDP-1\""
