@@ -19,27 +19,28 @@
         modules-center = [ "clock" ];
         modules-right = [ "network" "pulseaudio" "battery" "tray" ];
 
-
         # --- HYPRLAND SPECIFIC MODULES ---
         "hyprland/workspaces" = {
-          # {name} pulls in the numbers AND the text from hyprland-autoname-workspaces!
-          format = "{name}";
-          # We removed the persistent dots so it only shows workspaces you are actually using
+          format = "{name} {windows}";
+          format-window-separator = "  ";
+
+          # Default icon for apps we haven't mapped below
+          window-rewrite-default = "";
+
+          # Map specific app classes to Font Awesome icons!
+          window-rewrite = {
+            "class<kitty>" = "󰄛";          # A sleek cat icon for Kitty
+          "class<firefox>" = "󰈹";        # Firefox logo
+          "class<google-chrome>" = "󰊯";
+          "class<discord>" = "󰙯";        # Discord logo
+          "class<spotify>" = "󰓇";        # Spotify logo
+          "class<wofi>" = "󱗼";           # App grid icon
+          "class<obsidian>" = "󰈙";       # The actual Obsidian logo!
+          "class<emacs>" = "";          # The actual Emacs logo!
+          "class<vivaldi-stable>" = "";
+          "class<thunderbird>" = "";
+          };
         };
-
-
-        # # --- HYPRLAND SPECIFIC MODULES ---
-        # "hyprland/workspaces" = {
-        #   format = "{icon}";
-        #   format-icons = {
-        #     active = "";
-        #     default = "";
-        #     urgent = "";
-        #   };
-        #   persistent-workspaces = {
-        #     "*" = 5; # Always show 5 dots
-        #   };
-        # };
 
         "hyprland/window" = {
           max-length = 50;
@@ -87,6 +88,13 @@
     };
 
     style = ''
+      * {
+        /* Put the Nerd Font first! */
+        font-family: "JetBrainsMono Nerd Font", "Font Awesome 6 Free", sans-serif;
+        font-size: 14px;
+        font-weight: bold;
+      }
+
       * {
         font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", sans-serif;
         font-size: 14px;

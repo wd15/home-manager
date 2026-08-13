@@ -3,6 +3,7 @@
 {
   imports = [
     ./waybar.nix
+    ./wofi.nix
   ];
 
   # Install our essential desktop tools
@@ -14,25 +15,13 @@
     pavucontrol
     networkmanagerapplet
     blueman
-    hyprland-autoname-workspaces   # <- new
     font-awesome
     xdg-utils         # Lets apps open web links
     polkit_gnome      # The password prompt GUI
+    nerd-fonts.jetbrains-mono
   ];
 
-  systemd.user.services.hyprland-autoname-workspaces = {
-    Unit = {
-      Description = "Rename Hyprland workspaces after running apps";
-      After = [ "graphical-session.target" ];
-      PartOf = [ "graphical-session.target" ];
-    };
-    Service = {
-      ExecStart = "${pkgs.hyprland-autoname-workspaces}/bin/hyprland-autoname-workspaces";
-      Restart = "on-failure";
-    };
-    Install.WantedBy = [ "graphical-session.target" ];
-  };
-
+  fonts.fontconfig.enable = true;
   # --- SCREEN LOCKER ---
   programs.hyprlock = {
     enable = true;
@@ -63,9 +52,6 @@
       ];
     };
   };
-
-  # --- APP LAUNCHER ---
-  programs.wofi.enable = true;
 
   xdg.configFile."mako/config".text = ''
     default-timeout=5000
