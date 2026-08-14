@@ -1,4 +1,3 @@
-
 # ============================================================
 # bash.nix  (merged -- replaces both bash.nix and bash-cluster.nix)
 # Takes isCluster from specialArgs to branch on the few things
@@ -7,6 +6,140 @@
 { pkgs, isCluster ? false, ... }:
 
 {
+
+programs.starship = {
+  enable = true;
+  enableBashIntegration = true;
+  settings = {
+    format = "$hostname$shlvl\${custom.nix}$directory$git_branch$git_status$package$julia$python$cmd_duration\n$character";
+
+    shlvl = {
+      disabled = false;
+      threshold = 3;
+      symbol = "⚡";
+      repeat = false;
+      format = "[$symbol]($style) ";
+    };
+
+    # Built-in nix_shell module doesn't reliably detect `nix develop --impure`
+    # sessions (known upstream quirk), so we use a custom check instead.
+    nix_shell = { disabled = true; };
+
+    custom.nix = {
+      when = "test -n \"$IN_NIX_SHELL\"";
+      command = "echo '(nix)'";
+      format = "[($output)]($style) ";
+      style = "bold blue";
+    };
+
+    hostname = {
+      ssh_only = false;
+      format = "[\\[$hostname\\]]($style) ";
+      style = "bold green";
+    };
+
+    cmd_duration = {
+      min_time = 2000;  # only show for commands taking 2+ seconds (default)
+      format = "took [$duration]($style) ";
+      style = "bold yellow";
+    };
+
+    os = { disabled = true; };
+    gcloud = { disabled = true; };
+    aws = { disabled = true; };
+    openstack = { disabled = true; };
+  };
+};
+
+
+  # programs.starship = {
+  #   enable = true;
+  #   enableBashIntegration = true;
+  #   settings = {
+  #     # no format line — use Starship's default
+
+  #     shlvl = {
+  #       disabled = false;
+  #       threshold = 3;
+  #       symbol = "⚡";
+  #       repeat = false;
+  #       format = "[$symbol]($style) ";
+  #     };
+
+  #     nix_shell = {
+  #       disabled = false;
+  #       format = "[($symbol)]($style) ";
+  #       symbol = "nix";
+  #       style = "bold blue";
+  #     };
+
+  #     hostname = {
+  #       ssh_only = false;
+  #       format = "[$hostname]($style) ";
+  #       style = "bold green";
+  #     };
+
+  #     os = { disabled = true; };
+  #     gcloud = { disabled = true; };
+  #     aws = { disabled = true; };
+  #     openstack = { disabled = true; };
+  #   };
+  # };
+
+  # # --- STARSHIP PROMPT ---
+  # programs.starship = {
+  #   enable = true;
+  #   enableBashIntegration = true;
+  #   settings = {
+  #     # Front layout + Line Break before the prompt character ($character)
+
+  #     # format = "$shlvl\${custom.nix}$directory$git_branch$git_status$package$julia$python\n$character";
+
+  #     # Thunderbolt for nested shells
+  #     shlvl = {
+  #       disabled = false;
+  #       threshold = 3;
+  #       symbol = "⚡";
+  #       repeat = false;
+  #       format = "[$symbol]($style) ";
+  #     };
+
+  #     # Disable built-in modules we aren't using
+  #     #nix_shell = { disabled = true; };
+  #     nix_shell = {
+  #       disabled = false;
+  #       format = "[($symbol)]($style) ";
+  #       symbol = "nix";
+  #       style = "bold blue";
+  #     };
+
+  #     os = { disabled = true; };
+
+  #     hostname = {
+  #       ssh_only = false;   # show even when NOT over SSH (set to true if you only want it on remote/cluster)
+  #       format = "[$hostname]($style) ";
+  #       style = "bold green";
+  #     };
+
+  #     #custom.nix = {
+  #     #  when = "test -n \"$IN_NIX_SHELL\"";
+  #     #  command = "echo '(nix)'";
+  #     #  format = "[($output)]($style) ";
+  #     #  style = "bold blue";
+  #     #};
+
+  #     # Hide empty/noisy cloud modules
+  #     gcloud = { disabled = true; };
+  #     aws = { disabled = true; };
+  #     openstack = { disabled = true; };
+  #   };
+  # };
+
+
+
+
+
+  # --- BASH CONFIGURATION ---
   programs.bash = {
     enable = true;
 
@@ -23,7 +156,7 @@
     }
     # ---- Laptop-only aliases ----
     // (if !isCluster then {
-      lock = "/usr/local/bin/hyprlock";
+      lock = "hyprlock";
       firedef = "xdg-settings set default-web-browser firefox.desktop";
       vivdef = "xdg-settings set default-web-browser vivaldi-stable.desktop";
       bstart = "sudo systemctl start bluetooth.service";
@@ -57,26 +190,6 @@
         fi
         unset loginsh
       '' else ""}
-
-      # ---- Prompt (shared) ----
-      parse_git_branch() {
-        git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
-      }
-      PS1="[\\u@\\h:\\w]\[\e[1;34m\]\$(parse_git_branch)\[\e[m\]\[\e[1;32m\]$\[\e[m\] "
-      PS1="\[\e[1;32m\]''${PS1}\[\e[m\]"
-
-      show_shell_level() {
-        if [[ -v IN_NIX_SHELL ]]; then
-          echo -e -n '(nix)'
-        fi
-        if [[ $SHLVL -gt 2 ]]; then
-          for in in $( eval echo {3..$SHLVL} ); do
-            echo -e -n '\xe2\x9a\xa1'
-          done
-        fi
-      }
-      export -f show_shell_level
-      export PS1="\[\e[1;34m\]\$(show_shell_level)\[\e[m\]"$PS1
 
       # ---- tmux auto-attach (shared) ----
       # Known gotcha: a tmux SERVER only captures env vars at the moment
@@ -116,6 +229,9 @@
 
       # ---- micromamba shell hook (shared) ----
       __mamba_setup="$("$MAMBA_EXE" shell hook --shell bash --root-prefix "''${MAMBA_ROOT_PREFIX:-$HOME/micromamba}" 2> /dev/null)"
+
     '';
+
+
   };
 }
