@@ -39,6 +39,7 @@
           "class<emacs>" = "";          # The actual Emacs logo!
           "class<vivaldi-stable>" = "";
           "class<thunderbird>" = "";
+          "class<evince>" = "";
           };
         };
 

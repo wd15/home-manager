@@ -60,5 +60,8 @@
 
     # Other
     opencommit
+    mermaid-cli
+    jujutsu
+
   ];
 }

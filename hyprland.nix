@@ -21,6 +21,7 @@
     xdg-utils
     polkit_gnome
     nerd-fonts.jetbrains-mono
+    xdg-desktop-portal-gtk
   ];
 
   programs.hyprlock = {
@@ -91,6 +92,8 @@
 
       env = [
         "XDG_CURRENT_DESKTOP,Hyprland"
+         "XDG_SESSION_TYPE,wayland"
+        "XDG_SESSION_DESKTOP,Hyprland"
         "LIBVA_DRIVER_NAME,nvidia"
         "GBM_BACKEND,nvidia-drm"
         "__GLX_VENDOR_LIBRARY_NAME,nvidia"
@@ -102,6 +105,23 @@
       cursor = {
         no_hardware_cursors = true;
       };
+
+      windowrulev2 = [
+        # Force Vivaldi's internal file chooser window to float!
+        "float, class:^(\\.vivaldi-wrapped)$, title:^(Open Files)$"
+        "center, class:^(\\.vivaldi-wrapped)$, title:^(Open Files)$"
+        "size 900 600, class:^(\\.vivaldi-wrapped)$, title:^(Open Files)$"
+
+        # General file chooser fallbacks (for other browser/app popups)
+        "float, title:^(Open File)$"
+        "float, title:^(Select a File)$"
+        "float, title:^(Choose Files)$"
+        "float, title:^(Save As)$"
+        "float, class:^(xdg-desktop-portal-.*)$"
+        "center, class:^(xdg-desktop-portal-.*)$"
+        "size 900 600, class:^(xdg-desktop-portal-.*)$"
+      ];
+
     };
   };
 }
