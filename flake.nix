@@ -15,9 +15,10 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    aicommit2.url = "github:tak-bro/aicommit2";
   };
 
-  outputs = { nixpkgs, home-manager, agenix, ... }:
+  outputs = { nixpkgs, home-manager, agenix, aicommit2, ... }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -31,14 +32,20 @@
         # home-manager switch --flake .#wd15   (laptop, pippi)
         wd15 = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
-          extraSpecialArgs = { isCluster = false; };
+          extraSpecialArgs = {
+            isCluster = false;
+            aicommit2Pkg = aicommit2.packages.${system}.default;
+          };
           modules = [ ./home.nix unfreeModule agenix.homeManagerModules.default ];
         };
 
         # home-manager switch --flake .#cluster   (mr-french)
         cluster = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
-          extraSpecialArgs = { isCluster = true; };
+          extraSpecialArgs = {
+            isCluster = true;
+            aicommit2Pkg = aicommit2.packages.${system}.default;
+          };
           modules = [ ./home-cluster.nix unfreeModule agenix.homeManagerModules.default ];
         };
       };

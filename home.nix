@@ -3,7 +3,7 @@
 # Core glue only: identity, imports, session vars, small
 # program toggles that don't warrant their own file.
 # ============================================================
-{ config, pkgs, lib,  ... }:
+{ config, pkgs, lib, aicommit2Pkg, ... }:
 
 {
   imports = [
