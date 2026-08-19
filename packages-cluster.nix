@@ -6,7 +6,7 @@
 # flake.nix files (am-dt-modeling, automated-rocrate, etc.), not
 # baked into the home-manager profile.
 # ============================================================
-{ pkgs, ... }:
+{ pkgs, aicommit2Pkg, ... }:
 
 {
   home.packages = with pkgs; [
@@ -19,6 +19,8 @@
     pwgen
     nixpkgs-review
     github-cli
+    jujutsu
+    aicommit2Pkg
 
     # Quick-install / environment tools -- not scientific stacks
     # themselves, just the means to spin one up fast when needed.

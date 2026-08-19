@@ -3,7 +3,7 @@
 # Plain CLI tools + dev-runtime package list. Pure data --
 # easiest file to scan/edit without touching Nix expressions.
 # ============================================================
-{ pkgs, aicommit2Pkg, ... }:
+{ pkgs, aicommit2Pkg, isCluster ? false, ... }:
 
 {
   home.packages = with pkgs; [

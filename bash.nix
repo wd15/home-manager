@@ -168,8 +168,8 @@ programs.starship = {
     } else {})
     # ---- Cluster-only aliases ----
     // (if isCluster then {
-      jobs = ''squeue -o "%14i %10j %4t %8q %8a %8g %10P %10Q %8D %11l %11L %R" -u ''${USER}'';
-      jobsall = ''squeue -o "%14i %10j %4t %8q %8a %8g %10P %10Q %8D %11l %11L %R"'';
+      sjobs = ''squeue -o "%14i %10j %4t %8q %8a %8g %10P %10Q %8D %11l %11L %R" -u ''${USER}'';
+      sjobsall = ''squeue -o "%14i %10j %4t %8q %8a %8g %10P %10Q %8D %11l %11L %R"'';
       cancel = "scancel";
     } else {});
 
@@ -220,7 +220,7 @@ programs.starship = {
         }
       '' else ''
         # ---- Cluster-only PATH (no CUDA hardcoding -- let module system provide it) ----
-        export PATH="/usr/local/bin:~/bin/:$PATH"
+        export PATH="/toolbox/wd15/opt/bin:~/.nix-profile/bin:/usr/local/bin:~/bin/:$PATH"
       ''}
 
       [ -f /etc/bash_completion ] && source /etc/bash_completion
