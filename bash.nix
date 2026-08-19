@@ -4,140 +4,63 @@
 # that genuinely differ. Everything else is shared.
 # ============================================================
 { pkgs, isCluster ? false, ... }:
-
 {
 
-programs.starship = {
-  enable = true;
-  enableBashIntegration = true;
-  settings = {
-    format = "$hostname$shlvl\${custom.nix}$directory$git_branch$git_status$package$julia$python$cmd_duration\n$character";
+  programs.starship = {
+    enable = true;
+    enableBashIntegration = true;
+    settings = {
+      format = "$hostname$shlvl\${custom.nix}$directory$git_branch$git_status\${custom.jj}$package$julia$python$cmd_duration\n$character";
 
-    shlvl = {
-      disabled = false;
-      threshold = 3;
-      symbol = "⚡";
-      repeat = false;
-      format = "[$symbol]($style) ";
+      custom.jj = {
+        command = "jj log -r @ --no-graph -T 'change_id.short() ++ \" (\" ++ commit_id.short() ++ \")\"'";
+        when = "jj root";
+        symbol = "🥋 ";
+        style = "bold purple";
+        format = "on [$symbol$output]($style) ";
+      };
+
+      git_branch = {
+        only_attached = true; # Hides git branch if detached or managed by jj
+      };
+
+      shlvl = {
+        disabled = false;
+        threshold = 3;
+        symbol = "⚡";
+        repeat = false;
+        format = "[$symbol]($style) ";
+      };
+
+      # Built-in nix_shell module doesn't reliably detect `nix develop --impure`
+      # sessions (known upstream quirk), so we use a custom check instead.
+      nix_shell = { disabled = true; };
+
+      custom.nix = {
+        when = "test -n \"$IN_NIX_SHELL\"";
+        command = "echo '(nix)'";
+        format = "[($output)]($style) ";
+        style = "bold blue";
+      };
+
+      hostname = {
+        ssh_only = false;
+        format = "[\\[$hostname\\]]($style) ";
+        style = "bold green";
+      };
+
+      cmd_duration = {
+        min_time = 2000;  # only show for commands taking 2+ seconds (default)
+        format = "took [$duration]($style) ";
+        style = "bold yellow";
+      };
+
+      os = { disabled = true; };
+      gcloud = { disabled = true; };
+      aws = { disabled = true; };
+      openstack = { disabled = true; };
     };
-
-    # Built-in nix_shell module doesn't reliably detect `nix develop --impure`
-    # sessions (known upstream quirk), so we use a custom check instead.
-    nix_shell = { disabled = true; };
-
-    custom.nix = {
-      when = "test -n \"$IN_NIX_SHELL\"";
-      command = "echo '(nix)'";
-      format = "[($output)]($style) ";
-      style = "bold blue";
-    };
-
-    hostname = {
-      ssh_only = false;
-      format = "[\\[$hostname\\]]($style) ";
-      style = "bold green";
-    };
-
-    cmd_duration = {
-      min_time = 2000;  # only show for commands taking 2+ seconds (default)
-      format = "took [$duration]($style) ";
-      style = "bold yellow";
-    };
-
-    os = { disabled = true; };
-    gcloud = { disabled = true; };
-    aws = { disabled = true; };
-    openstack = { disabled = true; };
   };
-};
-
-
-  # programs.starship = {
-  #   enable = true;
-  #   enableBashIntegration = true;
-  #   settings = {
-  #     # no format line — use Starship's default
-
-  #     shlvl = {
-  #       disabled = false;
-  #       threshold = 3;
-  #       symbol = "⚡";
-  #       repeat = false;
-  #       format = "[$symbol]($style) ";
-  #     };
-
-  #     nix_shell = {
-  #       disabled = false;
-  #       format = "[($symbol)]($style) ";
-  #       symbol = "nix";
-  #       style = "bold blue";
-  #     };
-
-  #     hostname = {
-  #       ssh_only = false;
-  #       format = "[$hostname]($style) ";
-  #       style = "bold green";
-  #     };
-
-  #     os = { disabled = true; };
-  #     gcloud = { disabled = true; };
-  #     aws = { disabled = true; };
-  #     openstack = { disabled = true; };
-  #   };
-  # };
-
-  # # --- STARSHIP PROMPT ---
-  # programs.starship = {
-  #   enable = true;
-  #   enableBashIntegration = true;
-  #   settings = {
-  #     # Front layout + Line Break before the prompt character ($character)
-
-  #     # format = "$shlvl\${custom.nix}$directory$git_branch$git_status$package$julia$python\n$character";
-
-  #     # Thunderbolt for nested shells
-  #     shlvl = {
-  #       disabled = false;
-  #       threshold = 3;
-  #       symbol = "⚡";
-  #       repeat = false;
-  #       format = "[$symbol]($style) ";
-  #     };
-
-  #     # Disable built-in modules we aren't using
-  #     #nix_shell = { disabled = true; };
-  #     nix_shell = {
-  #       disabled = false;
-  #       format = "[($symbol)]($style) ";
-  #       symbol = "nix";
-  #       style = "bold blue";
-  #     };
-
-  #     os = { disabled = true; };
-
-  #     hostname = {
-  #       ssh_only = false;   # show even when NOT over SSH (set to true if you only want it on remote/cluster)
-  #       format = "[$hostname]($style) ";
-  #       style = "bold green";
-  #     };
-
-  #     #custom.nix = {
-  #     #  when = "test -n \"$IN_NIX_SHELL\"";
-  #     #  command = "echo '(nix)'";
-  #     #  format = "[($output)]($style) ";
-  #     #  style = "bold blue";
-  #     #};
-
-  #     # Hide empty/noisy cloud modules
-  #     gcloud = { disabled = true; };
-  #     aws = { disabled = true; };
-  #     openstack = { disabled = true; };
-  #   };
-  # };
-
-
-
-
 
   # --- BASH CONFIGURATION ---
   programs.bash = {
