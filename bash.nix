@@ -76,6 +76,14 @@
       mv = "mv -i";
       mkdir = "mkdir -p";
       edit = "emacs -nw";
+      j = "jj";
+      jst = "jj status";
+      jlog = "jj log";
+      jdiff = "jj diff";
+      jnew = "jj new";
+      jpush = "jj git push";
+      jfetch = "jj git fetch";
+      jdone = "jj done";
     }
     # ---- Laptop-only aliases ----
     // (if !isCluster then {
@@ -157,4 +165,5 @@
 
 
   };
+
 }

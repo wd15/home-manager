@@ -15,6 +15,7 @@
     ./packages.nix
     ./git-ssh.nix
     ./workspace-icons.nix
+    ./jujutsu.nix
   ];
 
   # NOTE: if flake.nix already sets nixpkgs.config.allowUnfree = true globally,

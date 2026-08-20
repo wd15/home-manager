@@ -5,6 +5,7 @@
     ./emacs.nix
     ./git-ssh.nix
     ./packages-cluster.nix
+    ./jujutsu.nix
   ];
 
   home.username = "wd15";
