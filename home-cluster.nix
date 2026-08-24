@@ -1,7 +1,8 @@
 { config, pkgs, lib, ... }:
 {
   imports = [
-    ./bash.nix
+    #    ./bash.nix
+    ./zsh.nix
     ./emacs.nix
     ./git-ssh.nix
     ./packages-cluster.nix

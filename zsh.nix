@@ -1,24 +1,31 @@
 # ============================================================
-# bash.nix  (merged -- replaces both bash.nix and bash-cluster.nix)
+# zsh.nix  (merged -- replaces both bash.nix and bash-cluster.nix)
 # Takes isCluster from specialArgs to branch on the few things
 # that genuinely differ. Everything else is shared.
 # ============================================================
 { pkgs, isCluster ? false, ... }:
 {
 
+  programs.bash = {
+    enable = true;
+  };
+
   programs.fzf = {
     enable = true;
     enableBashIntegration = true;
+    enableZshIntegration = true;
   };
 
   programs.zoxide = {
     enable = true;
     enableBashIntegration = true;
+    enableZshIntegration = true;
   };
 
   programs.starship = {
     enable = true;
     enableBashIntegration = true;
+    enableZshIntegration = true;
     settings = {
       format = "$hostname$shlvl\${custom.nix}$directory$git_branch$git_status\${custom.jj}$package$julia$python$cmd_duration\n$character";
 
@@ -31,7 +38,7 @@
       };
 
       git_branch = {
-        only_attached = true; # Hides git branch if detached or managed by jj
+        only_attached = true;
       };
 
       shlvl = {
@@ -42,8 +49,6 @@
         format = "[$symbol]($style) ";
       };
 
-      # Built-in nix_shell module doesn't reliably detect `nix develop --impure`
-      # sessions (known upstream quirk), so we use a custom check instead.
       nix_shell = { disabled = true; };
 
       custom.nix = {
@@ -60,7 +65,7 @@
       };
 
       cmd_duration = {
-        min_time = 2000;  # only show for commands taking 2+ seconds (default)
+        min_time = 2000;
         format = "took [$duration]($style) ";
         style = "bold yellow";
       };
@@ -72,9 +77,24 @@
     };
   };
 
-  # --- BASH CONFIGURATION ---
-  programs.bash = {
+  # --- ZSH CONFIGURATION ---
+  programs.zsh = {
     enable = true;
+    enableCompletion = true;
+
+    # Give Zsh the "Fish" superpowers
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
+
+    # Inject Nix environment variables so Hyprland inherits the PATH
+    # envExtra = ''
+    #   if [ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
+    #     . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+    #   fi
+    #   if [ -e "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh" ]; then
+    #     . "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh"
+    #   fi
+    # '';
 
     shellAliases = {
       ls = "ls --color=auto";
@@ -116,13 +136,13 @@
     } else {});
 
     initExtra = ''
+      # Enable interactive dropdown menus for Tab completion
+      zstyle ':completion:*' menu select
+
       ${if isCluster then ''
         # ---- Preserve HPC module-system compatibility (cluster only) ----
-        # Re-source /etc/profile.d/*.sh for non-login interactive shells --
-        # very likely how `module` (Lmod/environment-modules) gets injected
-        # into shells that aren't the very first login shell.
         if [ -z "$loginsh" ]; then
-          if [ -n "''${BASH_VERSION}" ]; then
+          if [ -n "''${ZSH_VERSION}" ]; then
             for i in /etc/profile.d/*.sh; do
               if [ -r "$i" ]; then
                 . "$i"
@@ -134,10 +154,6 @@
       '' else ""}
 
       # ---- tmux auto-attach (shared) ----
-      # Known gotcha: a tmux SERVER only captures env vars at the moment
-      # it first starts. A "fresh" terminal attaching to an old server
-      # can get stale WAYLAND_DISPLAY / SSH_AUTH_SOCK / etc. If something
-      # env-related seems stuck, try `tmux kill-server` then reopen.
       if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
           { tmux; [ ! -f ~/dontdie ] && exit || rm ~/dontdie; }
       fi
@@ -151,6 +167,7 @@
         # ---- Laptop-only: CUDA, browser, thermocalc ----
         export PATH=/usr/local/cuda-11.2/bin:''${PATH}
         export LD_LIBRARY_PATH=/usr/local/cuda-11.2/lib64:''${LD_LIBRARY_PATH}
+        export PATH="$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:$HOME/bin:$PATH"
         export PATH="/usr/local/bin:~/bin/:$PATH"
         export BROWSER=vivaldi
         export TC24B_HOME=/opt/Thermo-Calc/2024b
@@ -161,25 +178,19 @@
           export PATH="/home/wd15/miniforge3/bin:$PATH"
         }
       '' else ''
-        # ---- Cluster-only PATH (no CUDA hardcoding -- let module system provide it) ----
+        # ---- Cluster-only PATH ----
         export PATH="/toolbox/wd15/opt/bin:~/.nix-profile/bin:/usr/local/bin:~/bin/:$PATH"
       ''}
 
-      [ -f /etc/bash_completion ] && source /etc/bash_completion
-      [ -f ~/.git-completion.bash ] && source ~/.git-completion.bash
       [ -f /etc/ssl/certs/ca-certificates.crt ] && export REQUESTS_CA_BUNDLE="/etc/ssl/certs/ca-certificates.crt"
 
       # ---- micromamba shell hook (shared) ----
-      __mamba_setup="$("$MAMBA_EXE" shell hook --shell bash --root-prefix "''${MAMBA_ROOT_PREFIX:-$HOME/micromamba}" 2> /dev/null)"
+      __mamba_setup="$("$MAMBA_EXE" shell hook --shell zsh --root-prefix "''${MAMBA_ROOT_PREFIX:-$HOME/micromamba}" 2> /dev/null)"
 
       setwork() {
         ln -sfn "$PWD" ~/work
         echo "✅ '~/work' shortcut now points to: $(pwd)"
       }
     '';
-
-
-
   };
-
 }

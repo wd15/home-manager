@@ -7,7 +7,8 @@
 
 {
   imports = [
-    ./bash.nix
+    # ./bash.nix
+    ./zsh.nix
     ./emacs.nix
     ./shell.nix
     ./hyprland.nix
