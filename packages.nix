@@ -63,6 +63,6 @@
     mermaid-cli
     jujutsu
     aicommit2Pkg
-
+    alpine
   ];
 }

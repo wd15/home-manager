@@ -36,7 +36,7 @@
             isCluster = false;
             aicommit2Pkg = aicommit2.packages.${system}.default;
           };
-          modules = [ ./home.nix unfreeModule agenix.homeManagerModules.default ];
+          modules = [ ./laptop.nix unfreeModule agenix.homeManagerModules.default ];
         };
 
         # home-manager switch --flake .#cluster   (mr-french)
@@ -46,7 +46,7 @@
             isCluster = true;
             aicommit2Pkg = aicommit2.packages.${system}.default;
           };
-          modules = [ ./home-cluster.nix unfreeModule agenix.homeManagerModules.default ];
+          modules = [ ./cluster.nix unfreeModule agenix.homeManagerModules.default ];
         };
       };
     };

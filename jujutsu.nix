@@ -26,6 +26,8 @@
         # Quick branch/bookmark manipulation
         done = ["bookmark" "set" "main" "-r" "@"];       # Move 'main' bookmark to current working copy (@)
         nxt = ["new" "main"];                            # Open a fresh working copy on top of 'main'
+
+        sync-all = ["git" "fetch" "--all-remotes"];
       };
 
       ui = {
