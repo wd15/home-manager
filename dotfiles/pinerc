@@ -1,0 +1,14 @@
+# Core Identity
+personal-name=Daniel Wheeler
+user-domain=nist.gov
+
+# IMAP / SMTP with OAuth2
+smtp-server=smtp.nist.gov/user=daniel.wheeler@nist.gov/submit/auth=xoauth2
+inbox-path={outlook.office365.com/ssl/user=daniel.wheeler@nist.gov/auth=xoauth2}INBOX
+
+# Editor (Emacs terminal mode)
+editor=emacs -nw
+
+# Optional: Make Emacs pop up automatically when you hit 'Compose'
+# If you leave this out, you hit Ctrl+_ to open Emacs
+composer-preferences=enable-alternate-editor-implicitly
