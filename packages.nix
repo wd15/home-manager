@@ -3,7 +3,7 @@
 # Plain CLI tools + dev-runtime package list. Pure data --
 # easiest file to scan/edit without touching Nix expressions.
 # ============================================================
-{ pkgs, aicommit2Pkg, isCluster ? false, ... }:
+{ pkgs, isCluster ? false, ... }:
 
 {
   home.packages = with pkgs; [
@@ -62,7 +62,9 @@
     opencommit
     mermaid-cli
     jujutsu
-    aicommit2Pkg
+    aicommit2
     alpine
+    zen-browser
+
   ];
 }

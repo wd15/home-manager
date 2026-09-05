@@ -1,4 +1,4 @@
-{ config, pkgs, lib, aicommit2Pkg, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   imports = [

@@ -6,6 +6,7 @@
     ./wofi.nix
     ./gtk.nix
     ./keybindings.nix
+    ./hypridle.nix
   ];
 
   fonts.fontconfig.enable = true;
@@ -22,6 +23,7 @@
     polkit_gnome
     nerd-fonts.jetbrains-mono
     xdg-desktop-portal-gtk
+    hypridle
   ];
 
   programs.hyprlock = {

@@ -67,15 +67,26 @@ in
   xdg.mime.enable = true;
   xdg.configFile."mimeapps.list".force = true;
 
+  # xdg.mimeApps = {
+  #   enable = true;
+  #   defaultApplications = {
+  #     "text/html" = "vivaldi-stable.desktop";
+  #     "x-scheme-handler/http" = "vivaldi-stable.desktop";
+  #     "x-scheme-handler/https" = "vivaldi-stable.desktop";
+  #     "x-scheme-handler/about" = "vivaldi-stable.desktop";
+  #     "x-scheme-handler/unknown" = "vivaldi-stable.desktop";
+  #     "application/xhtml+xml" = "vivaldi-stable.desktop";
+  #   };
+  # };
+
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
-      "text/html" = "vivaldi-stable.desktop";
-      "x-scheme-handler/http" = "vivaldi-stable.desktop";
-      "x-scheme-handler/https" = "vivaldi-stable.desktop";
-      "x-scheme-handler/about" = "vivaldi-stable.desktop";
-      "x-scheme-handler/unknown" = "vivaldi-stable.desktop";
-      "application/xhtml+xml" = "vivaldi-stable.desktop";
+      "text/html" = "zen.desktop";
+      "x-scheme-handler/http" = "zen.desktop";
+      "x-scheme-handler/https" = "zen.desktop";
+      "x-scheme-handler/about" = "zen.desktop";
+      "x-scheme-handler/unknown" = "zen.desktop";
     };
   };
 

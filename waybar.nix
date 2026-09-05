@@ -40,6 +40,7 @@
           "class<vivaldi-stable>" = "";
           "class<thunderbird>" = "";
           "class<evince>" = "";
+          "class<zen>" = "";
           };
         };
 

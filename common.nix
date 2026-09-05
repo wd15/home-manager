@@ -23,7 +23,4 @@
     mouse = true;
   };
 
-  # home.file.".pinerc" = {
-  #   source = ./dotfiles/pinerc;
-  # };
 }
