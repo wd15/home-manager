@@ -76,14 +76,6 @@
     enable = true;
 
     settings = {
-      # monitor = [
-      #   "desc:ASUSTek COMPUTER INC ASUS VG32VQ1B 0x0000F8B4, 2560x1440@60, 0x0, 1"
-      #   "desc:BOE 0x0A15, 1920x1080@144, 2560x0, 1"
-      #   "desc:ASUSTek COMPUTER INC VG32VQ1B RCLMTF029491, 2560x1440@60, 4480x0, 1"
-      #   "desc:Samsung Electric Company C32H71x HTPJ500129, 2560x1440@60, 4480x0, 1"
-      #   "desc:ASUSTek COMPUTER INC ASUS VG32VQ1B 0x0004F2A8, 2560x1440@60, 0x0, 1"
-      #   ", preferred, auto, 1"
-      # ];
 
       monitor = [
         # --- LAPTOP SCREEN (Center) ---

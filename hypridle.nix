@@ -14,7 +14,7 @@
       listener = [
         # --- Screen Off (5 Minutes) ---
         {
-          timeout = 300;
+          timeout = 600;
           on-timeout = "hyprctl dispatch dpms off";     # Turn off all screens
           on-resume = "hyprctl dispatch dpms on";       # Wake up screens when mouse moves
         }
