@@ -83,12 +83,12 @@
 
         # --- WORK MONITORS ---
         # Right Monitor
-        "desc:ASUSTek COMPUTER INC ASUS VG32VQ1B 0x0004F2A8, 2560x1440@60, 4480x0, 1"
+        "desc:ASUSTek COMPUTER INC VG32VQ1B RCLMTF029491, 2560x1440@60, 4480x0, 1"
         # Left Monitor
         "desc:ASUSTek COMPUTER INC ASUS VG32VQ1B 0x0000F8B4, 2560x1440@60, 0x0, 1"
 
         # --- HOME MONITORS (Kept from your original config) ---
-        "desc:ASUSTek COMPUTER INC VG32VQ1B RCLMTF029491, 2560x1440@60, 0x0, 1"
+        "desc:ASUSTek COMPUTER INC ASUS VG32VQ1B 0x0004F2A8, 2560x1440@60, 0x0, 1"
         "desc:Samsung Electric Company C32H71x HTPJ500129, 2560x1440@60, 4480x0, 1"
 
         # --- FALLBACK ---
@@ -117,8 +117,6 @@
       cursor = {
         no_hardware_cursors = true;
       };
-
-
 
       windowrulev2 = [
         # Vivaldi: Float Todoist Extension Popups (Matches the extension URL on creation)
