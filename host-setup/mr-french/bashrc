@@ -1,0 +1,41 @@
+# ------------------------------------------------------------
+# ~/.bashrc  (real file, NOT a symlink)
+# ------------------------------------------------------------
+# Export custom Nix toolbox path for ALL shells so home-manager subshells work
+if [ -d "/toolbox/wd15/opt/bin" ]; then
+  export PATH="/toolbox/wd15/opt/bin:$PATH"
+fi
+
+# --- Namespace bootstrap: interactive shells only ---
+if [[ $- == *i* ]] && [ -z "$IN_NIX_NAMESPACE" ]; then
+
+  export IN_NIX_NAMESPACE=1
+
+  PINNED_ZSH=""
+  [ -f ~/.bootstrap-zsh-path ] && PINNED_ZSH=$(cat ~/.bootstrap-zsh-path)
+
+  if [ -n "$PINNED_ZSH" ]; then
+    PHYSICAL_ZSH="/toolbox/wd15/opt/nix${PINNED_ZSH#/nix}"
+
+    if [ -x "$PHYSICAL_ZSH/bin/zsh" ]; then
+      echo "🚀 FAST PATH ENGAGED: Bypassing Nix evaluator!"
+      exec /toolbox/wd15/opt/bin/nix shell --offline "$PINNED_ZSH" -c zsh -l
+    fi
+  fi
+
+  echo "Pinned zsh unavailable, falling back to slow flake resolution..." >&2
+  exec env NIX_PATH="" /toolbox/wd15/opt/bin/nix shell --inputs-from ~/git/home-manager nixpkgs#zsh -c zsh -l
+fi
+
+# Commands only for interactive shells
+[[ $- == *i* ]] || return
+
+HISTFILESIZE=100000
+HISTSIZE=10000
+shopt -s histappend
+shopt -s extglob
+shopt -s globstar
+shopt -s checkjobs
+
+# Home Manager's actual generated content
+[ -f ~/.bashrc-hm ] && . ~/.bashrc-hm

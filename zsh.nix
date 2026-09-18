@@ -27,6 +27,8 @@
     enableBashIntegration = true;
     enableZshIntegration = true;
     settings = {
+      scan_timeout = 5000;
+
       format = "$hostname$shlvl\${custom.nix}$directory$git_branch$git_status\${custom.jj}$package$julia$python$cmd_duration\n$character";
 
       custom.jj = {
@@ -81,6 +83,7 @@
   programs.zsh = {
     enable = true;
     enableCompletion = true;
+    completionInit = "autoload -U compinit && compinit -i";
 
     # Give Zsh the "Fish" superpowers
     autosuggestion.enable = true;
@@ -151,6 +154,14 @@
           fi
         fi
         unset loginsh
+
+        # ---- Self-Healing Fast Path Pin ----
+        if [ -n "$IN_NIX_NAMESPACE" ]; then
+          ACTIVE_ZSH_BIN=$(readlink /proc/$$/exe)
+          echo "''${ACTIVE_ZSH_BIN%/bin/zsh}" > ~/.bootstrap-zsh-path
+          export SHELL="$HOME/.nix-profile/bin/zsh"
+        fi
+
       '' else ""}
 
       # ---- tmux auto-attach (shared) ----
