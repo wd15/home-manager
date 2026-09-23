@@ -21,6 +21,7 @@
     github-cli
     jujutsu
     aicommit2
+    sqlite
 
     # Quick-install / environment tools -- not scientific stacks
     # themselves, just the means to spin one up fast when needed.

@@ -65,6 +65,7 @@
     aicommit2
     alpine
     zen-browser
-
+    sqlite
+    quarto
   ];
 }

@@ -24,6 +24,14 @@
       git-commit
       gptel
 
+      # ---- Quarto mode ----
+      quarto-mode
+      polymode
+      poly-markdown
+      julia-mode
+      poly-R
+      request
+
       # ---- Added for DOOM look/feel ----
       doom-themes        # DOOM's actual color themes (doom-one, doom-solarized-dark, etc.)
       doom-modeline      # DOOM's clean modeline
@@ -39,6 +47,10 @@
       minimap
       treemacs
       treemacs-all-the-icons   # wires treemacs into the icon set you already added
+
+      org-roam
+      org-roam-ui
+
     ];
 
     extraConfig = ''
@@ -155,45 +167,106 @@
       (add-hook 'server-after-make-frame-hook #'treemacs)
 
       (with-eval-after-load 'treemacs
-        (treemacs-follow-mode 1))
+        ;; Highlight the current file in the tree
+        (treemacs-follow-mode t)
+
+        ;; Automatically switch the tree to the current file's project/directory
+        (treemacs-project-follow-mode t))
 
       ;; ---- Org Mode Setup ----
+
       (with-eval-after-load 'org
-      ;; Define where your notes live
-      (setq org-directory "~/git/org")
-      ;; Tell the agenda to look in this directory
-      (setq org-agenda-files '("~/git/org"))
-      ;; Hide formatting markers like *bold* and /italic/
-      (setq org-hide-emphasis-markers t)
-      ;; Automatically indent text under headers
-      (setq org-startup-indented t))
+        ;; Core Directories
+        (setq org-directory "~/org")
+        (setq org-agenda-files '("~/org"))
+        (setq org-default-notes-file "~/org/tasks.org")
 
-      ;; Enable word wrap for writing
+       ;; Route all archived tasks to a single file
+        (setq org-archive-location "~/org/archive/archive.org::")
+
+        ;; custom agenda view
+        (setq org-agenda-custom-commands
+          '(("u" "Unscheduled Backlog" alltodo ""
+             ((org-agenda-todo-ignore-scheduled 'all)
+              (org-agenda-todo-ignore-deadlines 'all)))))
+
+        ;; Appearance
+        (setq org-hide-emphasis-markers t)
+        (setq org-startup-indented t)
+
+        ;; Capture Templates
+        (setq org-capture-templates
+            '(("t" "Todo Task" entry (file "~/org/tasks.org")
+               "* TODO %?\n  %U\n  Context: %a\n")
+              ("n" "Quick Note" entry (file "~/org/notes.org")
+               "* %?\n  %U\n  Context: %a\n")
+              ("p" "General/Personal Task" entry (file "~/org/tasks.org")
+               "* TODO %?\n  %U\n"))))
+
+      ;; Hooks and Global Keybindings (These remain outside the block so they are active immediately)
       (add-hook 'org-mode-hook #'visual-line-mode)
-
-      ;; Essential global keybindings
       (global-set-key (kbd "C-c l") 'org-store-link)
       (global-set-key (kbd "C-c a") 'org-agenda)
       (global-set-key (kbd "C-c c") 'org-capture)
 
-      (with-eval-after-load 'org
-      ;; ... your existing directory and agenda settings ...
+      ;; ---- Org Roam Setup ----
+      (use-package org-roam
+        :ensure t
+        :custom
+        (org-roam-directory (file-truename "~/org/roam"))
+        :bind (("C-c n l" . org-roam-buffer-toggle)
+               ("C-c n f" . org-roam-node-find)
+               ("C-c n i" . org-roam-node-insert)
+               ("C-c n c" . org-roam-capture))
+        :config
+        ;; Replicate Obsidian metadata structure via Property Drawers
 
-      ;; Set the default file for notes
-      (setq org-default-notes-file "~/org/tasks.org")
+        (setq org-roam-capture-templates
+          '(("d" "default" plain "%?"
+             :target (file+head "%<%Y%m%d%H%M%S>-''${slug}.org"
+                                ":PROPERTIES:\n:ID:       %<%Y%m%d%H%M%S>\n:PEOPLE:  \n:CREATED: %U\n:END:\n#+title: ''${title}\n#+filetags: \n\n")
+             :unnarrowed t)))
 
-      ;; Define your capture templates
-      (setq org-capture-templates
-          '(("t" "Todo Task" entry (file "~/git/org/tasks.org")
-             "* TODO %?\n  %U\n  Context: %a\n")
-            ("n" "Quick Note" entry (file "~/git/org/notes.org")
-             "* %?\n  %U\n  Context: %a\n")
-            ;; "p" for general/personal tasks without any file links
-            ("p" "General/Personal Task" entry (file "~/git/org/tasks.org")
-            "* TODO %?\n  %U\n"))))
+        (org-roam-db-autosync-mode))
+
+      ;; ---- Org Roam UI Setup ----
+      (use-package org-roam-ui
+        :ensure t
+        :after org-roam
+        :config
+        (setq org-roam-ui-sync-theme t
+              org-roam-ui-follow t
+              org-roam-ui-update-on-save t
+              org-roam-ui-open-on-start nil))
+
+    ;; ---- Quarto Mode ----
+
+    (use-package polymode :ensure t)
+
+    (use-package poly-markdown :ensure t :after polymode)
+
+    (use-package poly-R :ensure t :after polymode)
+
+    (use-package poly-markdown
+      :ensure t
+      :mode (("\\.qmd\\'" . poly-markdown-mode)))
+
+
+    ;; ---- show recent buffer visits ----
+
+    (recentf-mode 1)
+    (setq recentf-max-saved-items 100)
+    (global-set-key (kbd "C-c r") 'recentf-open-files)
+
+    (global-auto-revert-mode t)
+
+    ;; Move between Emacs tiles using C-x and Arrow Keys
+    (global-set-key (kbd "C-x <left>")  'windmove-left)
+    (global-set-key (kbd "C-x <right>") 'windmove-right)
+    (global-set-key (kbd "C-x <up>")    'windmove-up)
+    (global-set-key (kbd "C-x <down>")  'windmove-down)
 
     '';
+
   };
-
-
 }
