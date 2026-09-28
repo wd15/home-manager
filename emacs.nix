@@ -51,6 +51,8 @@
       org-roam
       org-roam-ui
 
+      pdf-tools
+      org-noter
     ];
 
     extraConfig = ''
@@ -265,6 +267,15 @@
     (global-set-key (kbd "C-x <right>") 'windmove-right)
     (global-set-key (kbd "C-x <up>")    'windmove-up)
     (global-set-key (kbd "C-x <down>")  'windmove-down)
+
+    (use-package pdf-tools
+      :config
+      (pdf-tools-install)
+      (setq-default pdf-view-display-size 'fit-page))
+
+    (use-package org-noter
+      :config
+      (setq org-noter-always-create-frame nil))
 
     '';
 
