@@ -59,13 +59,18 @@
     {
       homeConfigurations = {
         # home-manager switch --flake .#wd15   (laptop, pippi)
-        wd15 = mkHome {
+        "wd15@lily" = mkHome {
+          module = ./laptop.nix;
+          isCluster = false;
+        };
+
+        "wd15@pippi" = mkHome {
           module = ./laptop.nix;
           isCluster = false;
         };
 
         # home-manager switch --flake .#cluster   (mr-french)
-        cluster = mkHome {
+        "wd15@concorde" = mkHome {
           module = ./cluster.nix;
           isCluster = true;
         };

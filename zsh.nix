@@ -118,6 +118,7 @@
       jfetch = "jj git fetch";
       jdone = "jj done";
       work = "cd -P ~/work";
+      hms = "home-manager switch --flake ~/git/home-manager";
     }
     # ---- Laptop-only aliases ----
     // (if !isCluster then {

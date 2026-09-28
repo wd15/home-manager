@@ -118,37 +118,6 @@
         no_hardware_cursors = true;
       };
 
-      windowrulev2 = [
-        # Vivaldi: Float Todoist Extension Popups (Matches the extension URL on creation)
-        "float, class:^(vivaldi-stable)$, initialTitle:^(chrome-extension://jldhpllghnbhlbpcmnajkpdmadaolakh.*)$"
-        "center, class:^(vivaldi-stable)$, initialTitle:^(chrome-extension://jldhpllghnbhlbpcmnajkpdmadaolakh.*)$"
-        "size 400 600, class:^(vivaldi-stable)$, initialTitle:^(chrome-extension://jldhpllghnbhlbpcmnajkpdmadaolakh.*)$"
-
-        # Vivaldi: Float Todoist (Fallback rule for the final rendered title)
-        "float, class:^(vivaldi-stable)$, title:^(.*Todoist.*)$"
-        "center, class:^(vivaldi-stable)$, title:^(.*Todoist.*)$"
-        "size 400 600, class:^(vivaldi-stable)$, title:^(.*Todoist.*)$"
-
-        # Vivaldi: Float Settings Window
-        "float, class:^(vivaldi-stable)$, title:^(.*Settings.*)$"
-        "center, class:^(vivaldi-stable)$, title:^(.*Settings.*)$"
-
-        # Force Vivaldi's internal file chooser window to float!
-        "float, class:^(\\.vivaldi-wrapped)$, title:^(Open Files)$"
-        "center, class:^(\\.vivaldi-wrapped)$, title:^(Open Files)$"
-        "size 900 600, class:^(\\.vivaldi-wrapped)$, title:^(Open Files)$"
-
-        # General file chooser fallbacks (for other browser/app popups)
-        "float, title:^(Open File)$"
-        "float, title:^(Select a File)$"
-        "float, title:^(Choose Files)$"
-        "float, title:^(Save As)$"
-        "float, class:^(xdg-desktop-portal-.*)$"
-        "center, class:^(xdg-desktop-portal-.*)$"
-        "size 900 600, class:^(xdg-desktop-portal-.*)$"
-      ];
-
-
     };
   };
 }

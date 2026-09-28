@@ -32,7 +32,7 @@
 
       ui = {
         editor = "emacs -nw"; # Adjust to your preferred editor
-        paginate = "auto";
+        paginate = "never";
       };
     };
   };
