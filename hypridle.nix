@@ -6,7 +6,7 @@
     settings = {
       general = {
         # Point directly to your custom Ubuntu-native binary
-        lock_cmd = "pidof hyprlock || /usr/local/bin/hyprlock";
+        lock_cmd = "pidof hyprlock || smart-lock";
         before_sleep_cmd = "loginctl lock-session";    # Lock before the laptop suspends
         after_sleep_cmd = "hyprctl dispatch dpms on";  # Wake screens after suspend
       };

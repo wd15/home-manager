@@ -266,6 +266,13 @@
     (global-set-key (kbd "C-x <up>")    'windmove-up)
     (global-set-key (kbd "C-x <down>")  'windmove-down)
 
+
+    ;; set default font size to 14 pt
+    (set-face-attribute 'default nil :height 140)
+
+    (setq ispell-program-name "aspell")
+    ;; Optional: Makes Aspell run faster and look for standard US English
+    (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_US"))
     '';
 
   };

@@ -119,6 +119,7 @@
       jdone = "jj done";
       work = "cd -P ~/work";
       hms = "home-manager switch --flake ~/git/home-manager";
+      lock = "smart-lock";
     }
     # ---- Laptop-only aliases ----
     // (if !isCluster then {

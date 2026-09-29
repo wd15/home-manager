@@ -38,6 +38,18 @@ let
     sleep 1
     xrandr --output DP-1 --auto
   '';
+
+  smart-lock = pkgs.writeShellScriptBin "smart-lock" ''
+    # If the native Ubuntu binary exists (Gazelle), use it
+    if [ -x "/usr/local/bin/hyprlock" ]; then
+      exec /usr/local/bin/hyprlock
+    # Otherwise, fall back to the standard Nix binary (ThinkPad)
+    else
+      exec hyprlock
+    fi
+  '';
+
+
 in
 {
   # This is the key change: we return a configuration set, not a raw list.
@@ -49,5 +61,6 @@ in
     bat
     conda-activate
     wake-dp
+    smart-lock
   ];
 }

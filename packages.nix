@@ -67,5 +67,8 @@
     zen-browser
     sqlite
     quarto
+
+    aspell
+    aspellDicts.en
   ];
 }

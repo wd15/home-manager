@@ -12,7 +12,7 @@
   fonts.fontconfig.enable = true;
 
   home.packages = with pkgs; [
-    kitty
+#    kitty
     brightnessctl
     nwg-displays
     pavucontrol
@@ -25,6 +25,15 @@
     xdg-desktop-portal-gtk
     hypridle
   ];
+
+  programs.kitty = {
+     # font_si = "16.0"; # The default is usually 11.
+    enable = true;
+    font = {
+      name = "monospace"; # Or specify your preferred font, e.g., "FiraCode Nerd Font"
+      size = 14;
+    };
+  };
 
   programs.hyprlock = {
     enable = true;
