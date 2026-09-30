@@ -1,33 +1,17 @@
-# ============================================================
-# packages.nix
-# Plain CLI tools + dev-runtime package list. Pure data --
-# easiest file to scan/edit without touching Nix expressions.
-# ============================================================
 { pkgs, ... }:
 
 {
-  home.packages = with pkgs; [
-    google-cloud-sdk
+  imports = [ ./packages-common.nix ];
 
-    # Core Utilities
-    git
-    git-lfs
-    coreutils
-    bashInteractive
-    jq
-    pwgen
-    timer
-    nixpkgs-review
+  home.packages = with pkgs; [
+    # Cloud & DevOps
+    google-cloud-sdk
     ansible
     nix-ld
-    github-cli
 
     # Programming / Runtimes
     jdk
     nodejs
-    uv
-    poetry
-    micromamba
 
     # Desktop apps (non-browser)
     zotero
@@ -40,8 +24,9 @@
     pandoc
     imagemagick
     texlive.combined.scheme-full
+    quarto
 
-    # Python Environment
+    # Python Environment (Heavy for desktop)
     (python313.withPackages (p: [
       p.jupyter
       p.ipython
@@ -58,16 +43,11 @@
       monad-par mtl split stack lens ihaskell
     ]))
 
-    # Other
+    # Other Desktop
     opencommit
     mermaid-cli
-    jujutsu
-    aicommit2
     alpine
     zen-browser
-    sqlite
-    quarto
-
     aspell
     aspellDicts.en
   ];
