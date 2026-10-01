@@ -10,6 +10,8 @@ in
     ./gtk.nix
     ./keybindings.nix
     ./hypridle.nix
+    ./browsers.nix
+    ./workspace-icons.nix
   ];
 
   fonts.fontconfig.enable = true;

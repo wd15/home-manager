@@ -60,20 +60,20 @@
       homeConfigurations = {
         # home-manager switch --flake .#wd15   (laptop, pippi)
         "wd15@lily" = mkHome {
-          module = ./laptop.nix;
+          module = ./hosts/laptop.nix;
           hostName = "lily";
           isCluster = false;
         };
 
         "wd15@pippi" = mkHome {
-          module = ./laptop.nix;
+          module = ./hosts/laptop.nix;
           hostName = "pippi";
           isCluster = false;
         };
 
         # home-manager switch --flake .#cluster   (mr-french)
         "wd15@concorde" = mkHome {
-          module = ./cluster.nix;
+          module = ./hosts/cluster.nix;
           hostName = "concorde";
           isCluster = true;
         };

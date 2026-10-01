@@ -180,11 +180,22 @@ in
 
       ;; ---- Org Mode Setup ----
 
+
+
+
       (with-eval-after-load 'org
         ;; Core Directories
         (setq org-directory "~/org")
         (setq org-agenda-files '("~/org"))
         (setq org-default-notes-file "~/org/tasks.org")
+
+        ;; ---- Refile Configuration ----
+        ;; Allow refiling up to 3 levels deep (e.g., *** TODO)
+        (setq org-refile-targets '((nil . (:maxlevel . 3))))
+        ;; Show the full path in the search (e.g., Projects/ICAM Talk)
+        (setq org-refile-use-outline-path 'file)
+        ;; Allow fuzzy searching the whole path at once with Vertico
+        (setq org-outline-path-complete-in-steps nil)
 
        ;; Route all archived tasks to a single file
         (setq org-archive-location "~/org/archive/archive.org::")
@@ -201,11 +212,11 @@ in
 
         ;; Capture Templates
         (setq org-capture-templates
-            '(("t" "Todo Task" entry (file "~/org/tasks.org")
+            '(("t" "Todo Task" entry (file+headline "~/org/tasks.org" "Inbox")
                "* TODO %?\n  %U\n  Context: %a\n")
               ("n" "Quick Note" entry (file "~/org/notes.org")
                "* %?\n  %U\n  Context: %a\n")
-              ("p" "General/Personal Task" entry (file "~/org/tasks.org")
+              ("p" "General/Personal Task" entry (file+headline "~/org/tasks.org" "Inbox")
                "* TODO %?\n  %U\n"))))
 
       ;; Hooks and Global Keybindings (These remain outside the block so they are active immediately)
@@ -224,12 +235,16 @@ in
                ("C-c n i" . org-roam-node-insert)
                ("C-c n c" . org-roam-capture))
         :config
-        ;; Replicate Obsidian metadata structure via Property Drawers
+
 
         (setq org-roam-capture-templates
           '(("d" "default" plain "%?"
              :target (file+head "%<%Y%m%d%H%M%S>-''${slug}.org"
                                 ":PROPERTIES:\n:ID:       %<%Y%m%d%H%M%S>\n:PEOPLE:  \n:CREATED: %U\n:END:\n#+title: ''${title}\n#+filetags: \n\n")
+             :unnarrowed t)
+            ("p" "paper (org-noter)" plain "%?"
+             :target (file+head "%<%Y%m%d%H%M%S>-''${slug}.org"
+                                ":PROPERTIES:\n:ID:       %<%Y%m%d%H%M%S>\n:NOTER_DOCUMENT: %(read-file-name \"Select PDF: \" \"~/Papers/\")\n:CREATED: %U\n:END:\n#+title: ''${title}\n#+filetags: :paper: \n\n")
              :unnarrowed t)))
 
         (org-roam-db-autosync-mode))
@@ -279,23 +294,29 @@ in
     (use-package pdf-tools
       :mode ("\\.pdf\\'" . pdf-view-mode)
       :config
-      ;; Initialize the package (Nix handles the binary, so this won't prompt for compilation)
       (pdf-tools-install :no-query)
-      ;; Automatically scale PDFs to fit the width of the window
-      (setq-default pdf-view-display-size 'fit-width))
+      (setq-default pdf-view-display-size 'fit-width)
+      ;; Disable line numbers in PDFs to prevent window-splitting crashes
+      (add-hook 'pdf-view-mode-hook (lambda () (display-line-numbers-mode -1))))
+
 
     ;; Configure org-noter for the split-pane workflow
     (use-package org-noter
       :after (:any org pdf-view)
       :config
-      ;; Keep the split panes in the same Emacs frame instead of popping open new windows
       (setq org-noter-always-create-frame nil)
-      ;; Optional: hide other org-noter sessions when you open a new one
-      (setq org-noter-hide-other t))
+      (setq org-noter-hide-other t)
 
-      (set-face-attribute 'default nil
-        :font "FiraCode Nerd Font"
-        :height ${toString emacsFontSize})
+      ;; Force the split to be side-by-side (horizontal) and give notes 30% of the screen
+      (setq org-noter-notes-window-location '(horizontal . 0.3))
+
+      ;; Lower Emacs' strict width threshold so it allows the split on Pippi's screen
+      (setq split-width-threshold 100))
+
+
+    (set-face-attribute 'default nil
+      :font "FiraCode Nerd Font"
+      :height ${toString emacsFontSize})
 
     '';
 

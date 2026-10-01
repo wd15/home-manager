@@ -5,15 +5,17 @@
 # restriction applies from both machines' networks).
 # ============================================================
 { ... }:
-
+let
+  dotdir = ../dotfiles;
+in
 {
   home.file = {
-    ".config/git/config".source = ./dotfiles/gitconfig;
-    ".commit-template.txt".source = ./dotfiles/commit-template.txt;
-    ".gitignore".source = ./dotfiles/gitignore;
-    ".git-completion.bash".source = ./dotfiles/git-completion.bash;
-    ".ssh/config".source = ./dotfiles/ssh-config;
-    ".signature.txt".source = ./dotfiles/signature.txt;
+    ".config/git/config".source = dotdir + "/gitconfig";
+    ".commit-template.txt".source = dotdir + "/commit-template.txt";
+    ".gitignore".source = dotdir + "/gitignore";
+    ".git-completion.bash".source = dotdir + "/git-completion.bash";
+    ".ssh/config".source = dotdir + "/ssh-config";
+    ".signature.txt".source = dotdir + "/signature.txt";
 
     ".mambarc".text = ''
       channels:

@@ -2,11 +2,9 @@
 {
   imports = [
     ./common.nix
-    ./shell.nix
-    ./hyprland.nix
-    ./browsers.nix
-    ./packages.nix
-    ./workspace-icons.nix
+    ../shell/shell.nix
+    ../desktop/hyprland.nix
+    ../packages/packages.nix
   ];
 
   home.homeDirectory = "/home/wd15";
@@ -35,7 +33,7 @@
   '';
 
   age.identityPaths = [ "${config.home.homeDirectory}/.ssh/agenix" ];
-  age.secrets.opencommit-api-key.file = ./secrets/opencommit-api-key.age;
+  age.secrets.opencommit-api-key.file = ../secrets/opencommit-api-key.age;
 
   home.activation.opencommitConfig = lib.hm.dag.entryAfter ["agenixInstall"] ''
     cat > ${config.home.homeDirectory}/.opencommit <<EOF

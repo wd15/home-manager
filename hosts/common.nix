@@ -2,10 +2,10 @@
 
 {
   imports = [
-    ./zsh.nix
-    ./emacs.nix
-    ./git-ssh.nix
-    ./jujutsu.nix
+    ../shell/zsh.nix
+    ../emacs/emacs.nix
+    ../programs/git-ssh.nix
+    ../programs/jujutsu.nix
   ];
 
   home.username = "wd15";
