@@ -1,5 +1,8 @@
-{ pkgs, ... }:
-
+{ pkgs, hostName, ... }:
+let
+  isLily = hostName == "lily";
+  emacsFontSize = if isLily then 140 else 110;
+in
 {
   programs.emacs = {
     enable = true;
@@ -51,6 +54,8 @@
       org-roam
       org-roam-ui
 
+      pdf-tools
+      org-noter
     ];
 
     extraConfig = ''
@@ -266,13 +271,32 @@
     (global-set-key (kbd "C-x <up>")    'windmove-up)
     (global-set-key (kbd "C-x <down>")  'windmove-down)
 
-
-    ;; set default font size to 14 pt
-    (set-face-attribute 'default nil :height 140)
-
     (setq ispell-program-name "aspell")
     ;; Optional: Makes Aspell run faster and look for standard US English
     (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_US"))
+
+    ;; Enable pdf-tools and set it as the default PDF viewer
+    (use-package pdf-tools
+      :mode ("\\.pdf\\'" . pdf-view-mode)
+      :config
+      ;; Initialize the package (Nix handles the binary, so this won't prompt for compilation)
+      (pdf-tools-install :no-query)
+      ;; Automatically scale PDFs to fit the width of the window
+      (setq-default pdf-view-display-size 'fit-width))
+
+    ;; Configure org-noter for the split-pane workflow
+    (use-package org-noter
+      :after (:any org pdf-view)
+      :config
+      ;; Keep the split panes in the same Emacs frame instead of popping open new windows
+      (setq org-noter-always-create-frame nil)
+      ;; Optional: hide other org-noter sessions when you open a new one
+      (setq org-noter-hide-other t))
+
+      (set-face-attribute 'default nil
+        :font "FiraCode Nerd Font"
+        :height ${toString emacsFontSize})
+
     '';
 
   };

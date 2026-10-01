@@ -1,5 +1,4 @@
 { config, pkgs, lib, ... }:
-
 {
   imports = [
     ./common.nix
@@ -46,4 +45,5 @@
     EOF
     chmod 600 ${config.home.homeDirectory}/.opencommit
   '';
+
 }

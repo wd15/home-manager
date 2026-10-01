@@ -1,5 +1,8 @@
-{ config, pkgs, ... }:
-
+{ config, pkgs, hostName, ... }:
+let
+  isLily = hostName == "lily";
+  kittyFontSize = if isLily then 14 else 11;
+in
 {
   imports = [
     ./waybar.nix
@@ -31,7 +34,7 @@
     enable = true;
     font = {
       name = "monospace"; # Or specify your preferred font, e.g., "FiraCode Nerd Font"
-      size = 14;
+      size = kittyFontSize;
     };
   };
 

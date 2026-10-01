@@ -44,10 +44,10 @@
       };
 
       # 3. Helper function to eliminate duplication between targets
-      mkHome = { module, isCluster }: home-manager.lib.homeManagerConfiguration {
+      mkHome = { module, isCluster, hostName }: home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         extraSpecialArgs = {
-          inherit isCluster inputs;
+          inherit isCluster inputs hostName;
         };
         modules = [
           module
@@ -61,17 +61,20 @@
         # home-manager switch --flake .#wd15   (laptop, pippi)
         "wd15@lily" = mkHome {
           module = ./laptop.nix;
+          hostName = "lily";
           isCluster = false;
         };
 
         "wd15@pippi" = mkHome {
           module = ./laptop.nix;
+          hostName = "pippi";
           isCluster = false;
         };
 
         # home-manager switch --flake .#cluster   (mr-french)
         "wd15@concorde" = mkHome {
           module = ./cluster.nix;
+          hostName = "concorde";
           isCluster = true;
         };
       };
