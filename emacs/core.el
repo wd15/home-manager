@@ -97,3 +97,8 @@
 (global-set-key (kbd "C-c g c") 'gptel)
 (global-set-key (kbd "C-c g s") 'gptel-send)
 (global-set-key (kbd "C-c g m") 'gptel-menu)
+
+;; ---- Web Browser Integration ----
+;; Tell Emacs to use the system default browser for opening links and UI
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "xdg-open")

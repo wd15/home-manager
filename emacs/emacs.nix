@@ -6,7 +6,8 @@ in
 {
   programs.emacs = {
     enable = true;
-    package = pkgs.emacs;
+
+    package = pkgs.emacs-pgtk;
 
     extraPackages = epkgs: with epkgs; [
       better-defaults
@@ -51,7 +52,7 @@ in
       treemacs
       treemacs-all-the-icons
 
-      # ---- Org & Research ----
+      # ---- Org & Research----
       org-roam
       org-roam-ui
       pdf-tools

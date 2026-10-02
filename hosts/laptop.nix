@@ -20,11 +20,6 @@
     package = pkgs.vscode-fhs;
   };
 
-  services.emacs = {
-    enable = true;
-    client.enable = true;
-  };
-
   programs.tmux.extraConfig = ''
     # Copy tmux buffer to Wayland clipboard
     bind C-w run -b "tmux show-buffer | ${pkgs.wl-clipboard}/bin/wl-copy"
