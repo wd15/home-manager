@@ -50,5 +50,8 @@
     zen-browser
     aspell
     aspellDicts.en
+
+    # Add this to your existing list of packages
+    pkgs.nerd-fonts.fira-code
   ];
 }

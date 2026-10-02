@@ -48,7 +48,7 @@
            :unnarrowed t)
           ("p" "paper (org-noter)" plain "%?"
            :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
-                              ":PROPERTIES:\n:ID:       %<%Y%m%d%H%M%S>\n:NOTER_DOCUMENT: %(read-file-name \"Select PDF: \" \"~/Papers/\")\n:CREATED: %U\n:END:\n#+title: ${title}\n#+filetags: :paper: \n\n")
+                              ":PROPERTIES:\n:ID:       %<%Y%m%d%H%M%S>\n:PEOPLE:   \n:NOTER_DOCUMENT: %(read-file-name \"Select PDF: \" \"~/Papers/\")\n:CREATED: %U\n:END:\n#+title: ${title}\n#+filetags: :paper: \n\n")
            :unnarrowed t)))
   (org-roam-db-autosync-mode))
 

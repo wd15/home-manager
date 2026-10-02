@@ -102,3 +102,7 @@
 ;; Tell Emacs to use the system default browser for opening links and UI
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "xdg-open")
+
+;; Ensure GUI Emacs can see Nix binaries
+(setenv "PATH" (concat (getenv "PATH") ":" (expand-file-name "~/.nix-profile/bin")))
+(add-to-list 'exec-path (expand-file-name "~/.nix-profile/bin"))

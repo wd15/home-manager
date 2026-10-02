@@ -39,4 +39,5 @@
     chmod 600 ${config.home.homeDirectory}/.opencommit
   '';
 
+  fonts.fontconfig.enable = true;
 }
