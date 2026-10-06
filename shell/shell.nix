@@ -49,6 +49,10 @@ let
     fi
   '';
 
+  evince = pkgs.writeShellScriptBin "evince" ''
+    export GTK_THEME=Adwaita:light
+    exec ${pkgs.evince}/bin/evince "$@"
+  '';
 
 in
 {
@@ -62,5 +66,6 @@ in
     conda-activate
     wake-dp
     smart-lock
+    evince
   ];
 }

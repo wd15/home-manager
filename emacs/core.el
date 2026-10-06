@@ -102,3 +102,15 @@
 ;; Tell Emacs to use the system default browser for opening links and UI
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "xdg-open")
+
+(set-face-attribute 'default nil :font "FiraCode Nerd Font")
+
+;; Completely disable all startup and splash screens
+(setq inhibit-startup-screen t)
+
+;; Force the Emacs bootloader to focus strictly on the Agenda buffer
+(setq initial-buffer-choice
+      (lambda ()
+        (org-agenda nil "a")
+        (delete-other-windows)
+        (get-buffer "*Org Agenda*")))

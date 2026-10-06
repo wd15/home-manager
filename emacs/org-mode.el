@@ -26,6 +26,10 @@
           ("p" "General/Personal Task" entry (file+headline "~/org/tasks.org" "Inbox")
            "* TODO %?\n  %U\n"))))
 
+  ;; Define your strict two-state workflow
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "PROJECT(p)" "|" "DONE(d)")))
+
 (add-hook 'org-mode-hook #'visual-line-mode)
 (global-set-key (kbd "C-c l") 'org-store-link)
 (global-set-key (kbd "C-c a") 'org-agenda)
