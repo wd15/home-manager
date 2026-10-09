@@ -167,7 +167,7 @@
       '' else ""}
 
       # ---- tmux auto-attach (shared) ----
-      if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+      if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ] && [ -z "$INSIDE_EMACS" ]; then
           { tmux; [ ! -f ~/dontdie ] && exit || rm ~/dontdie; }
       fi
 
@@ -204,6 +204,35 @@
         ln -sfn "$PWD" ~/work
         echo "✅ '~/work' shortcut now points to: $(pwd)"
       }
+
+      # ---- Vterm Shell Integration ----
+      if [ -n "$INSIDE_EMACS" ]; then
+          vterm_printf() {
+              printf "\e]%s\e\\" "$1"
+          }
+
+          # 1. Perfect Directory Syncing
+          autoload -U add-zsh-hook
+          vterm_chpwd() {
+              vterm_printf "51;A$(pwd)"
+          }
+          add-zsh-hook chpwd vterm_chpwd
+          # Fire once on startup to set initial directory
+          vterm_chpwd
+
+          # 2. Shell-to-Editor Message Passing
+          vterm_cmd() {
+              local vterm_elisp
+              vterm_elisp=""
+              while [ $# -gt 0 ]; do
+                  vterm_elisp="$vterm_elisp""$(printf '"%s" ' "$(printf "%s" "$1" | sed -e 's|\\|\\\\|g' -e 's|"|\\"|g')")"
+                  shift
+              done
+              vterm_printf "51;E$vterm_elisp"
+          }
+      fi
+
+
     '';
   };
 }

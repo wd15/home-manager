@@ -5,6 +5,10 @@
     # --- KEYBOARD OPTIONS ---
     input = {
       kb_options = "ctrl:nocaps";
+      touchpad = {
+        clickfinger_behavior = true; # Maps 2 fingers to right-click, 3 to middle-click
+        tap-to-click = true;         # Optional: highly recommended if you like tapping
+      };
     };
 
     # --- MODIFIER KEY ---
@@ -26,6 +30,8 @@
       "$mod, D, exec, wofi --show drun"
       "$mod, Q, killactive,"
       "$mod SHIFT, E, exit,"
+      "$mod, E, exec, emacsclient -c -a 'emacs'"
+
 
       # Reload Waybar & Hyprpaper safely
       "$mod SHIFT, W, exec, pkill -f waybar; systemctl --user restart waybar && systemctl --user restart hyprpaper"

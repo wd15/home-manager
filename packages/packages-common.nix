@@ -30,7 +30,5 @@
     poetry
     micromamba
 
-    emacs-all-the-icons-fonts
-    nerd-fonts.fira-code
   ];
 }

@@ -41,6 +41,7 @@ in
       doom-modeline
       all-the-icons
       nerd-icons
+      nerd-icons-completion
 
       # ---- Minibuffer & Completion ----
       vertico
@@ -57,6 +58,10 @@ in
       org-roam-ui
       pdf-tools
       org-noter
+      org-modern
+      olivetti
+
+      vterm
     ];
 
     extraConfig = ''

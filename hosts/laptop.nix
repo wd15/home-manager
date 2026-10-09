@@ -40,4 +40,9 @@
   '';
 
   fonts.fontconfig.enable = true;
+
+  services.emacs = {
+    enable = true;
+    startWithUserSession = "graphical";
+  };
 }

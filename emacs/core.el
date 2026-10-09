@@ -34,16 +34,29 @@
   (when (derived-mode-p 'prog-mode)
     (delete-trailing-whitespace)))
 
+
 ;; ---- Theming (DOOM) ----
 (require 'doom-themes)
-(load-theme 'doom-one t)
-(doom-themes-visual-bell-config)
-(doom-themes-org-config)
-
 (require 'doom-modeline)
-(doom-modeline-mode 1)
-(setq doom-modeline-height 25)
-(setq doom-modeline-icon t)
+
+;; 1. Set all your preferences first (safe to do without a GUI)
+(setq doom-themes-enable-bold t
+      doom-themes-enable-italic t
+      doom-modeline-height 35
+      doom-modeline-icon t)
+
+;; 2. Create a function to apply the theme and visual tweaks
+(defun my-apply-doom-theme ()
+  (load-theme 'doom-one t)
+  (doom-modeline-mode 1)
+  (doom-themes-visual-bell-config)
+  (doom-themes-org-config))
+
+;; 3. Load correctly whether running as a daemon or standalone
+(if (daemonp)
+    (add-hook 'server-after-make-frame-hook #'my-apply-doom-theme)
+  (my-apply-doom-theme))
+
 
 ;; ---- Completion (Vertico) ----
 (vertico-mode 1)
@@ -76,8 +89,8 @@
 (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_US"))
 
 ;; ---- Treemacs ----
-(add-hook 'emacs-startup-hook #'treemacs)
-(add-hook 'server-after-make-frame-hook #'treemacs)
+;; (add-hook 'emacs-startup-hook #'treemacs)
+;; (add-hook 'server-after-make-frame-hook #'treemacs)
 (with-eval-after-load 'treemacs
   (treemacs-follow-mode t)
   (treemacs-project-follow-mode t))
@@ -118,3 +131,48 @@
         (org-agenda nil "a")
         (delete-other-windows)
         (get-buffer "*Org Agenda*")))
+
+;; Ensure Dired uses the icons
+(add-hook 'dired-mode-hook #'nerd-icons-dired-mode)
+
+;; Optional: If you want icons in your Vertico completion menus too
+;; (requires adding 'nerd-icons-completion' to your Nix packages)
+(nerd-icons-completion-mode 1)
+
+;; Disable legacy UI chrome
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(setq inhibit-startup-screen t)
+
+;; Add breathing room inside the Emacs window (adjust 15 to your liking)
+(modify-all-frames-parameters
+ '((right-divider-width . 1)
+   (bottom-divider-width . 1)
+   (internal-border-width . 15)))
+
+;; Enable vertical completion menus
+(vertico-mode 1)
+
+;; Optional Vertico tweaks for a better feel
+(setq vertico-cycle t)      ; Enable wrapping around the list
+(setq vertico-resize nil)   ; Keep the menu a fixed height
+
+;; Enable rich annotations (docstrings, file dates) next to the items
+(marginalia-mode 1)
+
+;; ---- Terminal (Vterm) ----
+(use-package vterm
+  :ensure t
+  :config
+  ;; Increase the scrollback buffer for long data assimilation logs
+  (setq vterm-max-scrollback 10000)
+
+  ;; Automatically kill the Emacs buffer when you type 'exit'
+  (setq vterm-kill-buffer-on-exit t))
+
+;; Turn off line numbers in the terminal
+(add-hook 'vterm-mode-hook (lambda () (display-line-numbers-mode -1)))
+
+;; Bind a quick shortcut to launch it
+(global-set-key (kbd "C-c v") 'vterm)

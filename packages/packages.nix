@@ -52,6 +52,9 @@
     aspellDicts.en
 
     # Add this to your existing list of packages
-    pkgs.nerd-fonts.fira-code
+    emacs-all-the-icons-fonts
+    nerd-fonts.fira-code
+    nerd-fonts.symbols-only
+
   ];
 }
