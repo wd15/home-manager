@@ -106,3 +106,15 @@
 ;; Ensure GUI Emacs can see Nix binaries
 (setenv "PATH" (concat (getenv "PATH") ":" (expand-file-name "~/.nix-profile/bin")))
 (add-to-list 'exec-path (expand-file-name "~/.nix-profile/bin"))
+
+(set-face-attribute 'default nil :font "FiraCode Nerd Font")
+
+;; Completely disable all startup and splash screens
+(setq inhibit-startup-screen t)
+
+;; Force the Emacs bootloader to focus strictly on the Agenda buffer
+(setq initial-buffer-choice
+      (lambda ()
+        (org-agenda nil "a")
+        (delete-other-windows)
+        (get-buffer "*Org Agenda*")))
