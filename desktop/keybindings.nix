@@ -2,6 +2,11 @@
 
 {
   wayland.windowManager.hyprland.settings = {
+    # --- KEYBOARD OPTIONS ---
+    input = {
+      kb_options = "ctrl:nocaps";
+    };
+
     # --- MODIFIER KEY ---
     "$mod" = "SUPER";
 
