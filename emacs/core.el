@@ -181,3 +181,10 @@
 (use-package vc-jj
   :config
   (add-to-list 'vc-handled-backends 'jj))
+
+;; ---- TRAMP (Remote Editing) ----
+(require 'tramp)
+;; Force SSH as the default method for speed and compatibility
+(setq tramp-default-method "ssh")
+;; Disable version control checks on remote files to prevent massive lag
+(setq vc-ignore-dir-regexp (format "%s\\|%s" vc-ignore-dir-regexp tramp-file-name-regexp))

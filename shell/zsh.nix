@@ -232,6 +232,9 @@
           }
       fi
 
+      if [ -f "$HOME/.ssh/id_ecdsa" ]; then
+        eval $(keychain --eval --agents ssh id_ecdsa --quiet)
+      fi
 
     '';
   };
