@@ -62,6 +62,18 @@ in
       olivetti
 
       vterm
+      multi-vterm
+
+      magit
+      magit-section
+      transient
+      dash
+      s
+      f
+      compat
+      nov
+      djvu
+      vc-jj
     ];
 
     extraConfig = ''

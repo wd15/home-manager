@@ -140,7 +140,7 @@
       cancel = "scancel";
     } else {});
 
-    initExtra = ''
+    initContent = ''
       # Enable interactive dropdown menus for Tab completion
       zstyle ':completion:*' menu select
 

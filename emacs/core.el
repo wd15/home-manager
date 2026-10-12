@@ -175,4 +175,9 @@
 (add-hook 'vterm-mode-hook (lambda () (display-line-numbers-mode -1)))
 
 ;; Bind a quick shortcut to launch it
-(global-set-key (kbd "C-c v") 'vterm)
+(global-set-key (kbd "C-c v") 'multi-vterm)
+
+;; ---- Jujutsu (vc-jj) Integration ----
+(use-package vc-jj
+  :config
+  (add-to-list 'vc-handled-backends 'jj))
