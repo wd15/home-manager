@@ -240,21 +240,6 @@
         fi
       fi
 
-      #  1. Wire <nixpkgs> to your flake registry so classic nix-shell works
-      export NIX_PATH="nixpkgs=flake:nixpkgs:$NIX_PATH"
-
-      # 2. Quick one-off packages (replaces 'nix shell')
-      # Usage: ns hello             -> interactive shell with hello
-      #        ns hello --run hello -> run one-off command
-      alias ns="nix-shell -p"
-
-      # 3. Flake dev environments (replaces 'nix develop')
-      # Usage: nd                   -> loads current repo's flake devShell into active shell
-      #        nd nixpkgs#hello     -> loads any flake package or shell
-      nd() {
-        source <(nix print-dev-env "''${1:-.}")
-      }
-
     '';
   };
 }
