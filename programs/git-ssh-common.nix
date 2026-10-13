@@ -27,9 +27,9 @@ in
     '';
   };
 
-  programs.keychain = {
-    enable = true;
-    enableBashIntegration = true;
-    keys = [ "id_ed25519" "id_rsa" ];
-  };
+  # programs.keychain = {
+  #   enable = true;
+  #   enableBashIntegration = true;
+  #   keys = [ "id_ed25519" "id_rsa" ];
+  # };
 }
