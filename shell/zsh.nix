@@ -236,7 +236,20 @@
           }
       fi
 
+      # ---- Native SSH Agent (Bypasses LDAP/keychain issues) ----
       if [ -f "$HOME/.ssh/id_ecdsa" ]; then
+        export SSH_ENV="$HOME/.ssh/agent-env"
+        [ -f "$SSH_ENV" ] && . "$SSH_ENV" >/dev/null
+
+        # Check if the agent process is still alive
+        if [ -z "$SSH_AGENT_PID" ] || ! kill -0 "$SSH_AGENT_PID" 2>/dev/null; then
+          ssh-agent -s > "$SSH_ENV"
+          . "$SSH_ENV" >/dev/null
+          ssh-add "$HOME/.ssh/id_ecdsa"
+        fi
+      fi
+      if [ -f "$HOME/.ssh/id_ecdsa" ]; then
+        export LOGNAME="wd15"
         eval $(keychain --eval --agents ssh id_ecdsa --quiet)
       fi
 
