@@ -3,7 +3,7 @@
 {
   imports = [
     ./common.nix
-    ./packages-cluster.nix
+    ../packages/packages-cluster.nix
   ];
 
   home.homeDirectory = "/users/wd15";
