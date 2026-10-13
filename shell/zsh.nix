@@ -173,10 +173,10 @@
         export LC_INSIDE_EMACS="1"
       fi
 
-      # ---- tmux auto-attach (shared) ----
-      if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ] && [ -z "$INSIDE_EMACS" ] && [ -z "$LC_INSIDE_EMACS" ]; then
-          { tmux; [ ! -f ~/dontdie ] && exit || rm ~/dontdie; }
-      fi
+      # # ---- tmux auto-attach (shared) ----
+      # if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ] && [ -z "$INSIDE_EMACS" ] && [ -z "$LC_INSIDE_EMACS" ]; then
+      #     { tmux; [ ! -f ~/dontdie ] && exit || rm ~/dontdie; }
+      # fi
 
       eval `dircolors -b`
       export HISTTIMEFORMAT="%d/%m/%y %T "
@@ -251,10 +251,10 @@
           ssh-add "$HOME/.ssh/id_ecdsa"
         fi
       fi
-      if [ -f "$HOME/.ssh/id_ecdsa" ]; then
-        export LOGNAME="wd15"
-        eval $(keychain --eval --agents ssh id_ecdsa --quiet)
-      fi
+      # if [ -f "$HOME/.ssh/id_ecdsa" ]; then
+      #   export LOGNAME="wd15"
+      #   eval $(keychain --eval --agents ssh id_ecdsa --quiet)
+      # fi
 
     '';
   };
