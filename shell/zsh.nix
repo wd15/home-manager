@@ -149,6 +149,9 @@
         if [ -z "$loginsh" ]; then
           if [ -n "''${ZSH_VERSION}" ]; then
             for i in /etc/profile.d/*.sh; do
+              # Ignore the cluster's globally installed keychain script
+              if [[ "$i" == *keychain* ]]; then continue; fi
+
               if [ -r "$i" ]; then
                 . "$i"
               fi
