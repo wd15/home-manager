@@ -6,6 +6,12 @@
 { pkgs, isCluster ? false, ... }:
 {
 
+  programs.direnv = {
+    enable = true;
+    enableZshIntegration = true;
+    nix-direnv.enable = true;
+  };
+
   programs.bash = {
     enable = true;
   };
@@ -85,19 +91,8 @@
     enableCompletion = true;
     completionInit = "autoload -U compinit && compinit -i";
 
-    # Give Zsh the "Fish" superpowers
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
-
-    # Inject Nix environment variables so Hyprland inherits the PATH
-    # envExtra = ''
-    #   if [ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
-    #     . "$HOME/.nix-profile/etc/profile.d/nix.sh"
-    #   fi
-    #   if [ -e "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh" ]; then
-    #     . "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh"
-    #   fi
-    # '';
 
     shellAliases = {
       ls = "ls --color=auto";
@@ -169,14 +164,9 @@
 
       '' else ""}
 
-      if  [ -n "$INSIDE_EMACS" ]; then
+      if [ -n "$INSIDE_EMACS" ]; then
         export LC_INSIDE_EMACS="1"
       fi
-
-      # # ---- tmux auto-attach (shared) ----
-      # if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ] && [ -z "$INSIDE_EMACS" ] && [ -z "$LC_INSIDE_EMACS" ]; then
-      #     { tmux; [ ! -f ~/dontdie ] && exit || rm ~/dontdie; }
-      # fi
 
       eval `dircolors -b`
       export HISTTIMEFORMAT="%d/%m/%y %T "
@@ -188,7 +178,6 @@
         export PATH=/usr/local/cuda-11.2/bin:''${PATH}
         export LD_LIBRARY_PATH=/usr/local/cuda-11.2/lib64:''${LD_LIBRARY_PATH}
         export PATH="$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:$HOME/bin:$PATH"
-        export PATH="/usr/local/bin:~/bin/:$PATH"
         export BROWSER=vivaldi
         export TC24B_HOME=/opt/Thermo-Calc/2024b
         export LSHOST=sequoia.nist.gov
@@ -199,7 +188,8 @@
         }
       '' else ''
         # ---- Cluster-only PATH ----
-        export PATH="/toolbox/wd15/opt/bin:~/.nix-profile/bin:/usr/local/bin:~/bin/:$PATH"
+        # nix-profile first so real Nix is used inside the namespace
+        export PATH="$HOME/.nix-profile/bin:/toolbox/wd15/opt/bin:/usr/local/bin:$HOME/bin:$PATH"
       ''}
 
       [ -f /etc/ssl/certs/ca-certificates.crt ] && export REQUESTS_CA_BUNDLE="/etc/ssl/certs/ca-certificates.crt"
@@ -214,29 +204,28 @@
 
       # ---- Vterm Shell Integration ----
       if [ -n "$INSIDE_EMACS" ]; then
-          vterm_printf() {
-              printf "\e]%s\e\\" "$1"
-          }
+        vterm_printf() {
+          printf "\e]%s\e\\" "$1"
+        }
 
-          # 1. Perfect Directory Syncing
-          autoload -U add-zsh-hook
-          vterm_chpwd() {
-              vterm_printf "51;A$(pwd)"
-          }
-          add-zsh-hook chpwd vterm_chpwd
-          # Fire once on startup to set initial directory
-          vterm_chpwd
+        # 1. Directory Syncing
+        autoload -U add-zsh-hook
+        vterm_chpwd() {
+          vterm_printf "51;A$(pwd)"
+        }
+        add-zsh-hook chpwd vterm_chpwd
+        vterm_chpwd
 
-          # 2. Shell-to-Editor Message Passing
-          vterm_cmd() {
-              local vterm_elisp
-              vterm_elisp=""
-              while [ $# -gt 0 ]; do
-                  vterm_elisp="$vterm_elisp""$(printf '"%s" ' "$(printf "%s" "$1" | sed -e 's|\\|\\\\|g' -e 's|"|\\"|g')")"
-                  shift
-              done
-              vterm_printf "51;E$vterm_elisp"
-          }
+        # 2. Shell-to-Editor Message Passing
+        vterm_cmd() {
+          local vterm_elisp
+          vterm_elisp=""
+          while [ $# -gt 0 ]; do
+            vterm_elisp="$vterm_elisp""$(printf '"\%s" ' "$(printf "%s" "$1" | sed -e 's|\\|\\\\|g' -e 's|"|\\"|g')")"
+            shift
+          done
+          vterm_printf "51;E$vterm_elisp"
+        }
       fi
 
       # ---- Native SSH Agent (Bypasses LDAP/keychain issues) ----
@@ -244,17 +233,27 @@
         export SSH_ENV="$HOME/.ssh/agent-env"
         [ -f "$SSH_ENV" ] && . "$SSH_ENV" >/dev/null
 
-        # Check if the agent process is still alive
-        if [ -z "$SSH_AGENT_PID" ] || ! kill -0 "$SSH_AGENT_PID" 2>/dev/null; then
+        if [ -z "$SSH_AGENT_PID" ] \vert{}\vert{} ! kill -0 "$SSH_AGENT_PID" 2>/dev/null; then
           ssh-agent -s > "$SSH_ENV"
           . "$SSH_ENV" >/dev/null
           ssh-add "$HOME/.ssh/id_ecdsa"
         fi
       fi
-      # if [ -f "$HOME/.ssh/id_ecdsa" ]; then
-      #   export LOGNAME="wd15"
-      #   eval $(keychain --eval --agents ssh id_ecdsa --quiet)
-      # fi
+
+      #  1. Wire <nixpkgs> to your flake registry so classic nix-shell works
+      export NIX_PATH="nixpkgs=flake:nixpkgs:$NIX_PATH"
+
+      # 2. Quick one-off packages (replaces 'nix shell')
+      # Usage: ns hello             -> interactive shell with hello
+      #        ns hello --run hello -> run one-off command
+      alias ns="nix-shell -p"
+
+      # 3. Flake dev environments (replaces 'nix develop')
+      # Usage: nd                   -> loads current repo's flake devShell into active shell
+      #        nd nixpkgs#hello     -> loads any flake package or shell
+      nd() {
+        source <(nix print-dev-env "''${1:-.}")
+      }
 
     '';
   };
