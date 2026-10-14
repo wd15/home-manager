@@ -190,6 +190,7 @@
         # ---- Cluster-only PATH ----
         # nix-profile first so real Nix is used inside the namespace
         export PATH="$HOME/.nix-profile/bin:/toolbox/wd15/opt/bin:/usr/local/bin:$HOME/bin:$PATH"
+        export XDG_CACHE_HOME="/toolbox/wd15/cache"
       ''}
 
       [ -f /etc/ssl/certs/ca-certificates.crt ] && export REQUESTS_CA_BUNDLE="/etc/ssl/certs/ca-certificates.crt"
