@@ -188,3 +188,18 @@
 (setq tramp-default-method "ssh")
 ;; Disable version control checks on remote files to prevent massive lag
 (setq vc-ignore-dir-regexp (format "%s\\|%s" vc-ignore-dir-regexp tramp-file-name-regexp))
+
+;; --- EGLOT & GRAMMAR CHECKING ---
+(with-eval-after-load 'eglot
+  ;; Map ltex-ls-plus to LaTeX, TeX, and Org modes
+  (add-to-list 'eglot-server-programs
+               '((latex-mode tex-mode org-mode) . ("ltex-ls-plus")))
+
+  ;; Tell LTeX you are writing in US English (change if needed)
+  (setq-default eglot-workspace-configuration
+                '((ltex . ((language . "en-US"))))))
+
+;; Automatically start the grammar checker in these modes
+(add-hook 'org-mode-hook 'eglot-ensure)
+(add-hook 'latex-mode-hook 'eglot-ensure)
+(add-hook 'tex-mode-hook 'eglot-ensure)

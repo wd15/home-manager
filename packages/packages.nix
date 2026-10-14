@@ -51,10 +51,10 @@
     aspell
     aspellDicts.en
 
-    # Add this to your existing list of packages
     emacs-all-the-icons-fonts
     nerd-fonts.fira-code
     nerd-fonts.symbols-only
 
+    ltex-ls-plus
   ];
 }
