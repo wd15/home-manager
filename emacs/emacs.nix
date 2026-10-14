@@ -42,6 +42,7 @@ in
       all-the-icons
       nerd-icons
       nerd-icons-completion
+      nerd-icons-dired
 
       # ---- Minibuffer & Completion ----
       vertico
