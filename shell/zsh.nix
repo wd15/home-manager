@@ -158,8 +158,10 @@
         # ---- Self-Healing Fast Path Pin ----
         if [ -n "$IN_NIX_NAMESPACE" ]; then
           ACTIVE_ZSH_BIN=$(readlink /proc/$$/exe)
-          echo "''${ACTIVE_ZSH_BIN%/bin/zsh}" > ~/.bootstrap-zsh-path
-          export SHELL="$HOME/.nix-profile/bin/zsh"
+          if [[ "$ACTIVE_ZSH_BIN" == /nix/store/* ]]; then
+            echo "''${ACTIVE_ZSH_BIN%/bin/zsh}" > ~/.bootstrap-zsh-path
+            export SHELL="$HOME/.nix-profile/bin/zsh"
+          fi
         fi
 
       '' else ""}
@@ -190,7 +192,9 @@
         # ---- Cluster-only PATH ----
         # nix-profile first so real Nix is used inside the namespace
         export PATH="$HOME/.nix-profile/bin:/toolbox/wd15/opt/bin:/usr/local/bin:$HOME/bin:$PATH"
-        export XDG_CACHE_HOME="/toolbox/wd15/cache"
+        if [ -d "/toolbox/wd15" ]; then
+          export XDG_CACHE_HOME="/toolbox/wd15/cache"
+        fi
       ''}
 
       [ -f /etc/ssl/certs/ca-certificates.crt ] && export REQUESTS_CA_BUNDLE="/etc/ssl/certs/ca-certificates.crt"
