@@ -6,12 +6,6 @@
 { pkgs, isCluster ? false, ... }:
 {
 
-  programs.direnv = {
-    enable = true;
-    enableZshIntegration = true;
-    nix-direnv.enable = true;
-  };
-
   programs.bash = {
     enable = true;
   };
@@ -188,6 +182,18 @@
           source ~/miniforge3/etc/profile.d/conda.sh
           export PATH="/home/wd15/miniforge3/bin:$PATH"
         }
+
+        # NIST Remote Printing
+        nprint() {
+          if [ -f "$1" ]; then
+            echo "🖨️  Sending $1 to color on poppins.nist.gov..."
+            ssh poppins.nist.gov "lp -d color" < "$1"
+          else
+            echo "Error: File not found - $1"
+          fi
+        }
+
+
       '' else ''
         # ---- Cluster-only PATH ----
         # nix-profile first so real Nix is used inside the namespace

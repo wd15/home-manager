@@ -75,6 +75,12 @@ in
       nov
       djvu
       vc-jj
+
+      consult-gh
+
+      jupyter
+      envrc
+      code-cells
     ];
 
     extraConfig = ''

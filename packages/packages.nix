@@ -26,17 +26,6 @@
     texlive.combined.scheme-full
     quarto
 
-    # Python Environment (Heavy for desktop)
-    (python313.withPackages (p: [
-      p.jupyter
-      p.ipython
-      p.jupyterlab
-      p.notebook
-      p.traitlets
-      p.ipykernel
-      p.matplotlib
-      p.pandas
-    ]))
 
     # Haskell Environment
     (haskellPackages.ghcWithPackages (ps: with ps; [
