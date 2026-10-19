@@ -51,6 +51,8 @@
     aspell
     aspellDicts.en
 
+    evince
+
     # Add this to your existing list of packages
     pkgs.nerd-fonts.fira-code
   ];
