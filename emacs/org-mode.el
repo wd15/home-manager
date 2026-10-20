@@ -1,19 +1,30 @@
-;; Add 15% extra vertical space between all lines globally (put near the top)
+;; Add 15% extra vertical space between all lines globally
 (setq-default line-spacing 0.15)
 
-;; Update your existing org-modern block at the bottom:
+;; ---- UI Polish: Org Modern & Olivetti ----
 (use-package org-modern
   :ensure t
   :hook ((org-mode . org-modern-mode)
          (org-agenda-finalize . org-modern-agenda))
   :config
   (setq org-modern-agenda-time nil)
-  ;; Add these two lines for clean list bullets and checkboxes
   (setq org-modern-list '((43 . "➤") (45 . "•") (42 . "◦")))
   (setq org-modern-checkbox '((?X . "✓") (?- . "[-]") (?  . "☐"))))
 
+(use-package olivetti
+  :ensure t
+  :hook (org-agenda-mode . olivetti-mode)
+  :config
+  (setq olivetti-body-width 80))
 
-;; ---- Org Mode Setup ----
+(add-hook 'org-agenda-mode-hook (lambda () (display-line-numbers-mode -1)))
+(add-hook 'org-mode-hook #'visual-line-mode)
+
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c c") 'org-capture)
+
+;; ---- Core Org Mode Setup ----
 (with-eval-after-load 'org
   (setq org-directory "~/org")
   (setq org-agenda-files '("~/org"))
@@ -36,16 +47,23 @@
   ;; Expand priorities from A to E
   (setq org-highest-priority ?A)
   (setq org-lowest-priority ?E)
-  (setq org-default-priority ?C)
+  (setq org-default-priority ?E)
 
-  ;; Optional: Give each priority a specific color in the doom-one theme
+  ;; Make priority letter strictly outweigh Scheduled/Deadline urgency boosts
+  (advice-add 'org-get-priority :override
+              (lambda (s)
+                (* 100000 (- org-lowest-priority
+                             (if (string-match org-priority-regexp s)
+                                 (string-to-char (match-string 2 s))
+                               org-default-priority)))))
+
+  ;; Fixed: Removed inner quotes that caused "Invalid face reference: quote"
   (setq org-priority-faces
-      '((?A . 'error)       ; Red
-        (?B . 'warning)     ; Orange/Yellow
-        (?C . 'success)     ; Green
-        (?D . 'highlight)   ; Blue
-        (?E . 'shadow)))    ; Grey
-
+        '((?A . error)     ; Red
+          (?B . warning)   ; Orange/Yellow
+          (?C . success)   ; Green
+          (?D . highlight) ; Blue
+          (?E . shadow)))  ; Grey
 
   (setq org-capture-templates
         '(("t" "Todo Task" entry (file+headline "~/org/tasks.org" "Inbox")
@@ -55,35 +73,26 @@
           ("p" "General/Personal Task" entry (file+headline "~/org/tasks.org" "Inbox")
            "* TODO %?\n  %U\n")))
 
-  ;; Define your strict two-state workflow
   (setq org-todo-keywords
         '((sequence "TODO(t)" "PROJECT(p)" "|" "DONE(d)")))
 
-  ;; Set agenda to show exactly 1 day (change to 3 if you meant "three days")
   (setq org-agenda-span 3)
-
   (setq org-enforce-todo-checkbox-dependencies t)
-
-  ;; Start on today rather than the beginning of the week
   (setq org-agenda-start-on-weekday nil)
-
-  ;; Hide tags in the agenda so the text stays perfectly clean
   (setq org-agenda-hide-tags-regexp ".")
-
-  ;; Remove the time grid if you don't schedule specific hourly appointments
   (setq org-agenda-use-time-grid nil)
 
-  ;; Clean up the agenda prefix to remove the redundant file category
   (setq org-agenda-prefix-format
         '((agenda . " %i %?-12t% s")
           (todo   . " %i %-12:c")
           (tags   . " %i %-12:c")
-          (search . " %i %-12:c"))))
+          (search . " %i %-12:c")))
 
-(add-hook 'org-mode-hook #'visual-line-mode)
-(global-set-key (kbd "C-c l") 'org-store-link)
-(global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "C-c c") 'org-capture)
+  ;; Fast Code Block Expansion (<jp, <jj, <sh + TAB)
+  (require 'org-tempo)
+  (add-to-list 'org-structure-template-alist '("jp" . "src jupyter-python"))
+  (add-to-list 'org-structure-template-alist '("jj" . "src jupyter-julia"))
+  (add-to-list 'org-structure-template-alist '("sh" . "src shell")))
 
 ;; ---- Org Roam Setup ----
 (use-package org-roam
@@ -131,20 +140,50 @@
   (setq org-noter-notes-window-location '(horizontal . 0.3))
   (setq split-width-threshold 100))
 
-
-(use-package org-modern
-  :ensure t
-  :hook ((org-mode . org-modern-mode)
-         (org-agenda-finalize . org-modern-agenda))
+;; ---- Org Babel & emacs-jupyter Integration ----
+(use-package jupyter
+  :demand t
+  :after org
   :config
-  ;; Makes the agenda date headers look like clean section dividers
-  (setq org-modern-agenda-time nil))
+  ;; Print evaluated code cells and plots directly in the REPL buffer
+  (setq jupyter-repl-echo-eval-p t)
 
-(use-package olivetti
-  :ensure t
-  :hook (org-agenda-mode . olivetti-mode)
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (python . t)
+     (shell . t)
+     (jupyter . t))) ; MUST be last in the list
+
+  (setq org-confirm-babel-evaluate nil)
+  (setq org-startup-with-inline-images t)
+  (add-hook 'org-babel-after-execute-hook #'org-display-inline-images 'append))
+
+;; ---- Per-Buffer Flake Environment Activation ----
+(use-package envrc
+  :init
+  (envrc-global-mode)
   :config
-  ;; Adjust this number to make the centered column wider or narrower
-  (setq olivetti-body-width 80))
+  ;; Ensure Org Babel subprocesses and :dir headers inherit the flake's .envrc
+  (advice-add 'org-babel-execute-src-block :around #'envrc-propagate-environment))
 
-(add-hook 'org-agenda-mode-hook (lambda () (display-line-numbers-mode -1)))
+;; ---- Seamless .ipynb Editing + Safe REPL Association ----
+(defun my/code-cells-eval-with-jupyter (orig-fun &rest args)
+  "Start and associate a Jupyter REPL if not connected; otherwise evaluate cell."
+  (if (and (derived-mode-p 'python-base-mode 'julia-mode)
+           (not (bound-and-true-p jupyter-repl-interaction-mode)))
+      (let ((kernel (if (derived-mode-p 'julia-mode) "julia" "python3")))
+        ;; Start kernel, associate with current buffer, and show REPL window
+        (jupyter-run-repl kernel nil t nil t)
+        (message "Starting %s kernel... Press C-c C-c again once In [1]: appears." kernel))
+    (apply orig-fun args)))
+
+(use-package code-cells
+  :init
+  (add-to-list 'auto-mode-alist '("\\.ipynb\\'" . code-cells-convert-ipynb))
+  :config
+  (advice-add 'code-cells-eval :around #'my/code-cells-eval-with-jupyter)
+  :bind (:map code-cells-mode-map
+              ("C-c C-c" . code-cells-eval)
+              ("M-p"     . code-cells-backward-cell)
+              ("M-n"     . code-cells-forward-cell)))

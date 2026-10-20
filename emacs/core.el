@@ -200,6 +200,23 @@
                 '((ltex . ((language . "en-US"))))))
 
 ;; Automatically start the grammar checker in these modes
-(add-hook 'org-mode-hook 'eglot-ensure)
+;; (add-hook 'org-mode-hook 'eglot-ensure)
 (add-hook 'latex-mode-hook 'eglot-ensure)
 (add-hook 'tex-mode-hook 'eglot-ensure)
+
+(use-package consult-gh
+  :ensure t)
+
+;; Only start Eglot in real file buffers, never in org-capture indirect buffers
+(add-hook 'org-mode-hook
+          (lambda ()
+            (unless (buffer-base-buffer)
+              (eglot-ensure))))
+
+;; Prevent Emacs 30 track-changes assertion from aborting org-capture-finalize
+(with-eval-after-load 'track-changes
+  (advice-add 'track-changes--before :around
+              (lambda (orig-fun &rest args)
+                (condition-case nil
+                    (apply orig-fun args)
+                  (cl-assertion-failed nil)))))
