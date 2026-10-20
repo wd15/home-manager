@@ -4,4 +4,5 @@ let
 in
 {
   "opencommit-api-key.age".publicKeys = [ agenixKey ];
+  "aic2-api-key.age".publicKeys = [ agenixKey ];
 }

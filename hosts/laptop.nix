@@ -29,6 +29,7 @@
 
   age.identityPaths = [ "${config.home.homeDirectory}/.ssh/agenix" ];
   age.secrets.opencommit-api-key.file = ../secrets/opencommit-api-key.age;
+  age.secrets.aic2-api-key.file = ../secrets/aic2-api-key.age;
 
   home.activation.opencommitConfig = lib.hm.dag.entryAfter ["agenixInstall"] ''
     cat > ${config.home.homeDirectory}/.opencommit <<EOF
@@ -39,6 +40,15 @@
     chmod 600 ${config.home.homeDirectory}/.opencommit
   '';
 
+  home.activation.aic2Config = lib.hm.dag.entryAfter ["agenixInstall"] ''
+    mkdir -p ${config.home.homeDirectory}/.config/aicommit2
+    cat > ${config.home.homeDirectory}/.config/aicommit2/config.ini <<EOF
+[GEMINI]
+key=$(cat ${config.age.secrets.aic2-api-key.path})
+model[]=gemini-3-flash-preview
+EOF
+    chmod 600 ${config.home.homeDirectory}/.config/aicommit2/config.ini
+  '';
   fonts.fontconfig.enable = true;
 
   services.emacs = {
