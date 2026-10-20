@@ -56,5 +56,10 @@
     nerd-fonts.symbols-only
 
     ltex-ls-plus
+
+    evince
+
+     # Add this to your existing list of packages
+    pkgs.nerd-fonts.fira-code
   ];
 }
