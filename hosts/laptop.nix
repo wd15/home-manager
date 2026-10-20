@@ -40,7 +40,9 @@
     chmod 600 ${config.home.homeDirectory}/.opencommit
   '';
 
-  home.activation.aic2Config = lib.hm.dag.entryAfter ["agenixInstall"] ''
+  home.activation.aic2Config = lib.hm.dag.entryAfter ["agenixInstall" "reloadSystemd"] ''
+    export XDG_RUNTIME_DIR="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+    ${pkgs.systemd}/bin/systemctl --user start agenix.service || true
     mkdir -p ${config.home.homeDirectory}/.config/aicommit2
     cat > ${config.home.homeDirectory}/.config/aicommit2/config.ini <<EOF
 [GEMINI]
@@ -49,6 +51,9 @@ model[]=gemini-3-flash-preview
 EOF
     chmod 600 ${config.home.homeDirectory}/.config/aicommit2/config.ini
   '';
+
+
+
   fonts.fontconfig.enable = true;
 
   services.emacs = {
