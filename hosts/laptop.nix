@@ -61,4 +61,18 @@ EOF
     enable = true;
     startWithUserSession = "graphical";
   };
+
+  xdg.desktopEntries.org-protocol = {
+    name = "Org-Protocol";
+    exec = "emacsclient -- %u";
+    terminal = false;
+    type = "Application";
+    categories = [ "System" ];
+    mimeType = [ "x-scheme-handler/org-protocol" ];
+  };
+
+  xdg.mimeApps.defaultApplications = {
+    "x-scheme-handler/org-protocol" = [ "org-protocol.desktop" ];
+  };
+
 }

@@ -25,7 +25,7 @@
     imagemagick
     texlive.combined.scheme-full
     quarto
-
+    d2
 
     # Haskell Environment
     (haskellPackages.ghcWithPackages (ps: with ps; [
