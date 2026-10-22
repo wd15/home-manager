@@ -239,6 +239,20 @@
         }
       fi
 
+      # ---- Native SSH Agent (Lily Only) ----
+      if [[ "$(hostname)" == "lily" ]]; then
+        export SSH_ENV="$HOME/.ssh/agent-env"
+        [ -f "$SSH_ENV" ] && . "$SSH_ENV" >/dev/null
+
+        if [ -z "$SSH_AGENT_PID" ] || ! kill -0 "$SSH_AGENT_PID" 2>/dev/null; then
+          ssh-agent -s > "$SSH_ENV"
+          . "$SSH_ENV" >/dev/null
+          for key in "$HOME/.ssh/"id_{ed25519,ecdsa,rsa}; do
+            [ -f "$key" ] && ssh-add "$key" 2>/dev/null
+          done
+        fi
+      fi
+
       # ---- Native SSH Agent (Bypasses LDAP/keychain issues) ----
       if [ -f "$HOME/.ssh/id_ecdsa" ]; then
         export SSH_ENV="$HOME/.ssh/agent-env"
