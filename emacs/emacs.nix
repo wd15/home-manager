@@ -81,6 +81,8 @@ in
       jupyter
       envrc
       code-cells
+
+      org-fragtog
     ];
 
     extraConfig = ''
