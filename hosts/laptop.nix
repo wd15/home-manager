@@ -5,6 +5,7 @@
     ../shell/shell.nix
     ../desktop/hyprland.nix
     ../packages/packages.nix
+    ../programs/rclone.nix
   ];
 
   home.homeDirectory = "/home/wd15";

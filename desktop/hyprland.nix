@@ -74,7 +74,7 @@ in
       "default-timeout" = 5000;
       "max-visible" = 5;
       sort = "-time";
-      "on-button-left" = "invoke-default-action,dismiss";
+      "on-button-left" = "dismiss";
     };
   };
 
