@@ -152,6 +152,7 @@
          ("C-c n s" . my/org-find-similar-notes)
          ("C-c n P" . my/org-roam-promote-archived-note))
   :config
+
   (setq org-roam-capture-templates
         '(("d" "default" plain "%?"
            :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
@@ -159,8 +160,13 @@
            :unnarrowed t)
           ("p" "paper (org-noter)" plain "%?"
            :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
-                              ":PROPERTIES:\n:ID:       %<%Y%m%d%H%M%S>\n:PEOPLE:   \n:NOTER_DOCUMENT: %(read-file-name \"Select PDF: \" \"~/Papers/\")\n:CREATED:  %U\n:END:\n#+title: ${title}\n#+filetags: :paper: \n\n")
+                              ":PROPERTIES:\n:ID:       %<%Y%m%d%H%M%S>\n:PEOPLE:   \n:NOTER_DOCUMENT: %(read-file-name \"Select PDF: \" \"~/org/roam/pdfs/\")\n:CREATED:  %U\n:END:\n#+title: ${title}\n#+filetags: :paper:\n\n")
+           :unnarrowed t)
+          ("r" "reference (citar)" plain "%?"
+           :target (file+head "%<%Y%m%d%H%M%S>-${citar-citekey}.org"
+                              ":PROPERTIES:\n:ID:       %<%Y%m%d%H%M%S>\n:PEOPLE:   ${citar-author}\n:NOTER_DOCUMENT: ~/org/roam/pdfs/${citar-citekey}.pdf\n:CREATED:  %U\n:END:\n#+title: ${title}\n#+filetags: :paper:\n\n* Notes\n")
            :unnarrowed t)))
+
   (org-roam-db-autosync-mode))
 
 (use-package org-roam-ui
@@ -338,22 +344,6 @@
       (org-roam-db-update-file new-path)
       (message "Promoted to active org-roam node: %s"
                (file-name-nondirectory new-path)))))
-
-;; ---- PDF Tools & Org Noter ----
-(use-package pdf-tools
-  :mode ("\\.pdf\\'" . pdf-view-mode)
-  :config
-  (pdf-tools-install :no-query)
-  (setq-default pdf-view-display-size 'fit-width)
-  (add-hook 'pdf-view-mode-hook (lambda () (display-line-numbers-mode -1))))
-
-(use-package org-noter
-  :after (:any org pdf-view)
-  :config
-  (setq org-noter-always-create-frame nil
-        org-noter-hide-other t
-        org-noter-notes-window-location '(horizontal . 0.3)
-        split-width-threshold 100))
 
 ;; ---- Org Babel & emacs-jupyter Integration ----
 (use-package jupyter

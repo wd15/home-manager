@@ -61,6 +61,9 @@ in
       org-noter
       org-modern
       olivetti
+      biblio
+      citar
+      citar-org-roam
 
       vterm
       multi-vterm
@@ -88,6 +91,7 @@ in
     extraConfig = ''
       ${builtins.readFile ./core.el}
       ${builtins.readFile ./org-mode.el}
+      ${builtins.readFile ./bib-pdf.el}
 
       ;; ---- Dynamic Nix Configuration ----
       ;; This stays in Nix so it can evaluate the emacsFontSize variable
